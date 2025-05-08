@@ -3,6 +3,7 @@
 set $mod Mod4
 
 exec --no-startup-id picom
+exec --no-startup-id date +%s > /tmp/network_event_timestamp
 exec_always --no-startup-id killall polybar
 exec_always --no-startup-id /home/tx27/.config/polybar/launch.sh
 exec_always --no-startup-id feh --bg-scale ~/.config/backgrounds/lofiwallpaper.png
@@ -46,6 +47,11 @@ bindsym $mod+Return exec alacritty
 bindsym $mod+q kill
 
 bindcode $mod+40 exec rofi -show drun
+
+bindsym Print exec --no-startup-id sh -c 'maim -s "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
+bindsym Shift+Print exec --no-startup-id sh -c 'maim "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
+
+bindsym F9 exec --no-startup-id sh -c '/home/tx27/.cargo/bin/xcolor | tr -d "\n" | xclip -selection clipboard'
 
 bindsym $mod+j focus left
 bindsym $mod+k focus down
