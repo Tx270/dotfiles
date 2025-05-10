@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source ~/.cache/wal/colors.sh
+
 # Constants
 divider="---------"
 goback="Back"
@@ -179,7 +181,7 @@ print_status() {
         done
         printf "\n"
     else
-        echo "%{F#cba6f7}%{F-}"
+        echo "%{T4}%{F$color9}%{F-}"
     fi
 }
 
@@ -261,7 +263,7 @@ show_menu() {
     esac
 }
 
-rofi_command="rofi -dmenu $* -p"
+rofi_command="rofi -theme /home/tx27/.config/rofi/managers.rasi -dmenu $* -p "
 
 case "$1" in
     --status)

@@ -9,7 +9,7 @@ elif [[ "$connected" =~ "disabled" ]]; then
 	toggle="󰖩  Enable Wi-Fi"
 fi
 
-chosen_network=$(echo -e "$toggle\n$wifi_list" | uniq -u | rofi -dmenu -i -selected-row 1 -p "Wi-Fi SSID: " )
+chosen_network=$(echo -e "$toggle\n$wifi_list" | uniq -u | rofi -dmenu -i -selected-row 1 -p "Wi-Fi" -theme "/home/tx27/.config/rofi/managers.rasi" )
 read -r chosen_id <<< "${chosen_network:3}"
 
 if [ "$chosen_network" = "" ]; then

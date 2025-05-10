@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$HOME/.cache/wal/colors.sh" # dodane
+
 wifi_interface="wlan0"
 ethernet_interface="enp0s3"
 test_url="http://nmcheck.gnome.org/check_network_status.txt"
@@ -76,5 +78,5 @@ elif ip link show "$ethernet_interface" | grep -q "state UP"; then
   icon=$([ "$net_status" = "online" ] && echo "󰈁" || echo "󰈂")
 fi
 
-echo "%{F#cba6f7}$icon$ssid_text%{F-}"
+echo "%{T4}%{F$color9}$icon$ssid_text%{F-}"
 
