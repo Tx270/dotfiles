@@ -13,9 +13,9 @@
     padding = 10
     horizontal_padding = 15
     frame_width = 2
-    frame_color = "#B774C4"
+    frame_color = "#DF346B"
     separator_height = 2
-    separator_color = "#0c0b21"
+    separator_color = "#010116"
     idle_threshold = 120
     follow = mouse
     sticky_history = yes
@@ -30,19 +30,19 @@
     title = Dunst
 
 [urgency_low]
-    background = "#0c0b21"
-    foreground = "#5e5c71"
-    frame_color = "#5e5c71"
+    background = "#010116"
+    foreground = "#565669"
+    frame_color = "#565669"
     timeout = 5
 
 [urgency_normal]
-    background = "#0c0b21"
-    foreground = "#6E96D3"
-    frame_color = "#963A8D"
+    background = "#010116"
+    foreground = "#D8476C"
+    frame_color = "#6E326B"
     timeout = 8
 
 [urgency_critical]
-    background = "#0c0b21"
-    foreground = "#c2c2c7"
-    frame_color = "#B774C4"
+    background = "#010116"
+    foreground = "#bfbfc4"
+    frame_color = "#DF346B"
     timeout = 0

@@ -2,7 +2,7 @@
 
 set $mod Mod4
 
-exec --no-startup-id xcompmgr
+exec --no-startup-id xcompmgr -c -t-4 -l-4 -r3.5 -o.75 -f -D 1
 exec --no-startup-id date +%s > /tmp/network_event_timestamp
 exec --no-startup-id /home/tx27/.config/wal/wal.sh -q
 exec_always --no-startup-id /home/tx27/.config/polybar/launch.sh
