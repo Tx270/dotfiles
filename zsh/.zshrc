@@ -68,6 +68,23 @@ alias update='sudo apt update && sudo apt upgrade'
 alias nas='ssh -i ~/.ssh/id_ed25519 -p 77 Tomek@192.168.1.100'
 alias rbot='ssh -t -i ~/.ssh/id_ed25519 -p 77 Tomek@192.168.1.100 "/usr/local/bin/docker restart discord-bot" && notify-send "Powiadomienie" "Discord bot reset complete!"'
 
+unalias sudo 2>/dev/null
+
+apt() {
+  command nala "$@"
+}
+
+sudo() {
+  if [[ "$1" == "apt" ]]; then
+    shift
+    command sudo nala "$@"
+  else
+    command sudo "$@"
+  fi
+}
+
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 . "$HOME/.atuin/bin/env"
 eval "$(atuin init zsh --disable-up-arrow)"
+
+export PATH=$PATH:/home/tx27/.spicetify
