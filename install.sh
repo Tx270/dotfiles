@@ -1,167 +1,174 @@
 #!/bin/bash
 
-# Log file setup
 LOG_FILE="$HOME/installation-log"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
-# Funkcje pomocnicze
 log_section() {
-  echo -e "\n\033[1;34m===== $1 =====\033[0m"
+    echo -e "\n\033[1;34m===== $1 =====\033[0m"
 }
 
 pause() {
-  read -p "Press Enter to continue..."
+    read -p "Press Enter to continue..."
 }
 
-# Sprawdzenie uprawnień
 if [ "$(id -u)" != 0 ]; then
-  echo "This script must be run with sudo" >&2
-  exit 1
+    echo "This script must be run with sudo" >&2
+    exit 1
 fi
 
-# Pobranie rzeczywistego użytkownika
 REAL_USER=$(logname)
 USER_HOME="/home/$REAL_USER"
 
-# Aktualizacja systemu
 log_section "Updating System"
-apt update -qq || {
-  echo "Error updating repositories"
-  exit 1
-}
-apt upgrade -y -qq || {
-  echo "Error upgrading system"
-  exit 1
-}
+apt-get update
+apt-get upgrade -y
 pause
 
-# Instalacja podstawowych pakietów
 log_section "Installing Essential Packages"
-apt install -y -qq curl git stow build-essential libpam0g-dev libxcb-xkb-dev || {
-  echo "Error installing essential packages"
-  exit 1
-}
+apt-get install -y curl git stow build-essential libpam0g-dev libxcb-xkb-dev
 pause
 
-# Środowisko graficzne
 log_section "Installing Desktop Environment"
-apt install -y -qq xorg xinit i3 xcompmgr i3lock || {
-  echo "Error installing desktop environment"
-  exit 1
-}
+apt-get install -y xorg xinit i3 xcompmgr i3lock
 pause
 
-# Komponenty UI
 log_section "Installing UI Components"
-apt install -y -qq polybar rofi dunst feh maim xclip xsel libnotify-bin || {
-  echo "Error installing UI components"
-  exit 1
-}
+apt-get install -y polybar rofi dunst feh maim xclip xsel libnotify-bin
 pause
 
-# Terminal i edytor
 log_section "Installing Terminal and Editor"
-apt install -y -qq kitty neovim || {
-  echo "Error installing terminal and editor"
-  exit 1
-}
+apt-get install -y kitty neovim
 pause
 
-# System audio
 log_section "Installing Audio System"
-apt install -y -qq pipewire pipewire-audio-client-libraries libspa-0.2-bluetooth wireplumber pamixer playerctl || {
-  echo "Error installing audio system"
-  exit 1
-}
+apt-get install -y pipewire pipewire-audio-client-libraries libspa-0.2-bluetooth wireplumber pamixer playerctl
 pause
 
-# Bluetooth
 log_section "Installing Bluetooth Support"
-apt install -y -qq bluez bluez-tools || {
-  echo "Error installing Bluetooth support"
-  exit 1
-}
-systemctl enable bluetooth || {
-  echo "Error enabling Bluetooth service"
-  exit 1
-}
+apt-get install -y bluez bluez-tools
+systemctl enable bluetooth
 pause
 
-# Narzędzia systemowe
 log_section "Installing System Utilities"
-apt install -y -qq neofetch htop bc smartmontools network-manager || {
-  echo "Error installing system utilities"
-  exit 1
-}
+apt-get install -y htop bc smartmontools network-manager
 pause
 
-# Aplikacje
 log_section "Installing Applications"
-apt install -y -qq firefox-esr thunar || {
-  echo "Error installing applications"
-  exit 1
-}
+
+apt-get install -y firefox-esr thunar
+
+if [ ! -f /etc/apt/sources.list.d/spotify.list ]; then
+    curl -sS https:
+    echo "deb https://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
+    apt-get update
+fi
+apt-get install -y spotify-client
+
+if [ ! -f /usr/local/bin/neofetch ]; then
+    git clone https:
+    cd /tmp/neofetch
+    make
+    make install
+fi
 pause
 
-# Narzędzia developerskie
-log_section "Installing Development Tools"
-apt install -y -qq cargo pipx zoxide fzf ripgrep fd-find jq imagemagick || {
-  echo "Error installing development tools"
-  exit 1
-}
-pause
-
-# Spotify
-log_section "Installing Spotify"
-curl -sS https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg || {
-  echo "Error adding Spotify key"
-  exit 1
-}
-echo "deb https://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list || {
-  echo "Error adding Spotify repository"
-  exit 1
-}
-apt update -qq || {
-  echo "Error updating repositories"
-  exit 1
-}
-apt install -y -qq spotify-client || {
-  echo "Error installing Spotify"
-  exit 1
-}
-pause
-
-# Menadżer wyświetlania
 log_section "Installing Display Manager"
-git clone https://github.com/fairyglade/ly /tmp/ly || {
-  echo "Error cloning ly repository"
-  exit 1
-}
-cd /tmp/ly || {
-  echo "Error changing directory"
-  exit 1
-}
-make || {
-  echo "Error building ly"
-  exit 1
-}
-make install || {
-  echo "Error installing ly"
-  exit 1
-}
-systemctl enable ly.service || {
-  echo "Error enabling ly service"
-  exit 1
-}
+if [ ! -f /usr/local/bin/ly ]; then
+
+    mkdir -p /tmp/zig
+    curl -L https:
+    export PATH="/tmp/zig:$PATH"
+
+    git clone https:
+    cd /tmp/ly
+    zig build
+    zig build installexe
+    systemctl enable ly.service
+fi
 pause
 
-# Konfiguracja użytkownika
 log_section "Configuring User Environment"
-su - "$REAL_USER" <<'EOF'
-# ... (zachowaj oryginalną sekcję konfiguracji użytkownika bez zmian)
-EOF
-pause
+su - "$REAL_USER" << 'EOF'
 
-# Finalizacja
+mkdir -p ~/.local/share/fonts/{meslo,departure}
+
+for variant in Regular Bold Italic BoldItalic; do
+    font_file="$HOME/.local/share/fonts/meslo/MesloLGSNerdFontMono-$variant.ttf"
+    if [ ! -f "$font_file" ]; then
+        curl -L "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20$variant.ttf" -o "$font_file"
+    fi
+done
+fc-cache -fv
+
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+
+if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]; then
+    git clone --depth=1 https:
+fi
+
+plugins=(
+    "https://github.com/zsh-users/zsh-autosuggestions"
+    "https://github.com/zsh-users/zsh-syntax-highlighting"
+)
+for plugin in "${plugins[@]}"; do
+    repo_name=$(basename "$plugin")
+    if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$repo_name" ]; then
+        git clone "$plugin" "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$repo_name"
+    fi
+done
+
+systemctl --user mask pulseaudio.socket pulseaudio.service
+systemctl --user --now enable pipewire pipewire-pulse wireplumber
+
+if ! command -v wal &> /dev/null; then
+    pipx install pywal16
+    pipx ensurepath
+fi
+
+export PATH="$HOME/.cargo/bin:$PATH"
+[ ! -f ~/.cargo/bin/yazi ] && cargo install yazi-fm
+[ ! -f ~/.cargo/bin/xcolor ] && cargo install xcolor
+
+cd ~/.dotfiles && stow */
+
+find ~/.config -name "*.sh" -type f -exec chmod +x {} \;
+
+if [ ! -f /usr/local/bin/betterlockscreen ]; then
+    git clone https:
+    cd /tmp/betterlockscreen
+    sudo install -Dm755 betterlockscreen /usr/local/bin/
+    betterlockscreen -u ~/.config/backgrounds/nice-blue-background.png
+fi
+
+~/.config/wal/wal.sh
+
+if ! crontab -l | grep -q sysmonitor.sh; then
+    (crontab -l 2>/dev/null; echo "*/10 * * * * ~/.config/sysmonitor.sh") | crontab -
+fi
+EOF
+
+log_section "Configuring Spotify"
+spotify_icon_dir="$USER_HOME/.local/share/applications"
+mkdir -p "$spotify_icon_dir"
+cat > "$spotify_icon_dir/spotify.desktop" << EOF
+[Desktop Entry]
+Type=Application
+Name=Spotify
+GenericName=Music Player
+Icon=/usr/share/icons/hicolor/256x256/apps/spotify.png
+Exec=spotify %U
+Terminal=false
+Categories=Audio;Music;Player;
+EOF
+chown "$REAL_USER:$REAL_USER" "$spotify_icon_dir/spotify.desktop"
+
+log_section "Cleaning Desktop Files"
+rm -f /usr/share/applications/{rofi-theme-selector,org.pulseaudio.pavucontrol,rofi,thunar-settings,display-im7.q16}.desktop 2>/dev/null
+
+log_section "Setting Default Shell"
+chsh -s "$(which zsh)" "$REAL_USER"
+
 log_section "Installation Complete"
-echo "Please reboot your system to apply all changes."
+echo "System ready for reboot"
