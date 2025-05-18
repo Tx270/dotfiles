@@ -15,31 +15,27 @@ if [ ! -f "$HOME/.local/share/fonts/Meslo/MesloLGS NF Regular.ttf" ]; then
   mkdir -p "$HOME/.local/share/fonts/" && cd /tmp || exit 1
   wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip -O Meslo.zip || exit 2
   unzip -oq Meslo.zip -d Meslo || exit 3
-  cp Meslo "$HOME/.local/share/fonts" || exit 4
+  rm Meslo.zip
+  mv Meslo "$HOME/.local/share/fonts" || exit 4
   fc-cache -f > /dev/null
-  rm -rf Meslo Meslo.zip
   echo "Meslo Nerd fonts installed"
 fi
 pause
 
 log_section "Installing Zsh Plugins"
-sudo chsh -s "$(which zsh)" "$(logname)"
+sudo chsh -s "$(which zsh)" "$USER"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]; then
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
 fi
-plugins=(
-    "https://github.com/zsh-users/zsh-autosuggestions"
-    "https://github.com/zsh-users/zsh-syntax-highlighting"
-)
-for plugin in "${plugins[@]}"; do
-    repo_name=$(basename "$plugin")
-    if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$repo_name" ]; then
-        git clone "$plugin" "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$repo_name"
-    fi
-done
+if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+fi
+if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+fi
 pause
 
 log_section "Configuring Audio"
@@ -49,7 +45,6 @@ pause
 
 log_section "Installing Pywal and Ensuring pipx Path"
 if ! command -v wal &> /dev/null; then
-    python3 -m pip install --user pipx
     python3 -m pipx ensurepath
     pipx install pywal16
 fi
@@ -61,18 +56,20 @@ export PATH="$HOME/.cargo/bin:$PATH"
 [ ! -f ~/.cargo/bin/xcolor ] && cargo install xcolor
 pause
 
-log_section "Applying Dotfiles with Stow"
+log_section "Installing Ruby Tools"
+[ ! -f /usr/local/bin/colorls ] && sudo gem install colorls
+pause
+
+log_section "Applying Dotfiles"
 rm -r ~/.config/neofetch
 cd ~/.dotfiles
 stow */
 find ~/.config -name "*.sh" -type f -exec chmod +x {} \;
 pause
 
-log_section "Setting up Crontab for Sysmonitor"
+log_section "Setting up Sysmonitor script"
 if ! crontab -l | grep -q sysmonitor.sh; then
     (crontab -l 2>/dev/null; echo "*/10 * * * * ~/.config/sysmonitor.sh") | crontab -
 fi
-pause
 
-log_section "User Configuration Complete"
-echo "User environment ready."
+echo "User environment ready. You can reboot now."
