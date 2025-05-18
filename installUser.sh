@@ -11,17 +11,19 @@ pause() {
 }
 
 log_section "Setting up Fonts"
-mkdir -p ~/.local/share/fonts/{meslo,departure}
-for variant in Regular Bold Italic BoldItalic; do
-    font_file="$HOME/.local/share/fonts/meslo/MesloLGSNerdFontMono-$variant.ttf"
-    if [ ! -f "$font_file" ]; then
-        curl -L "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20$variant.ttf" -o "$font_file"
-    fi
-done
-fc-cache -fv
+if [ ! -f "$HOME/.local/share/fonts/Meslo/MesloLGS NF Regular.ttf" ]; then
+  mkdir -p "$HOME/.local/share/fonts/" && cd /tmp || exit 1
+  wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip -O Meslo.zip || exit 2
+  unzip -oq Meslo.zip -d Meslo || exit 3
+  cp Meslo "$HOME/.local/share/fonts" || exit 4
+  fc-cache -f > /dev/null
+  rm -rf Meslo Meslo.zip
+  echo "Meslo Nerd fonts installed"
+fi
 pause
 
-log_section "Installing Oh-My-Zsh and Plugins"
+log_section "Installing Zsh Plugins"
+sudo chsh -s "$(which zsh)" "$(logname)"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
@@ -60,24 +62,10 @@ export PATH="$HOME/.cargo/bin:$PATH"
 pause
 
 log_section "Applying Dotfiles with Stow"
-cd ~/.dotfiles && stow */
-pause
-
-log_section "Making Scripts Executable"
+rm -r ~/.config/neofetch
+cd ~/.dotfiles
+stow */
 find ~/.config -name "*.sh" -type f -exec chmod +x {} \;
-pause
-
-log_section "Installing and Configuring Betterlockscreen"
-if [ ! -f /usr/local/bin/betterlockscreen ]; then
-    git clone https://github.com/betterlockscreen/betterlockscreen.git /tmp/betterlockscreen
-    cd /tmp/betterlockscreen
-    sudo install -Dm755 betterlockscreen /usr/local/bin/
-    betterlockscreen -u ~/.config/backgrounds/nice-blue-background.png
-fi
-pause
-
-log_section "Applying pywal Theme"
-~/.config/wal/wal.sh
 pause
 
 log_section "Setting up Crontab for Sysmonitor"
