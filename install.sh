@@ -49,17 +49,16 @@ systemctl enable bluetooth
 pause
 
 log_section "Installing System Utilities and Shell"
-apt-get install -y htop bc smartmontools network-manager zsh
+apt-get install -y htop bc smartmontools network-manager zsh nala zip batcat pipx ruby ruby-dev
 pause
 
 log_section "Installing Applications"
-apt-get install -y firefox-esr thunar
 if [ ! -f /etc/apt/sources.list.d/spotify.list ]; then
-    curl -sS https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-    echo "deb https://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
+    curl -sS https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+    echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
     apt-get update
 fi
-apt-get install -y spotify-client
+apt-get install -y spotify-client firefox-esr thunar
 pause
 
 set -e
@@ -72,7 +71,7 @@ if [ ! -f /usr/local/bin/neofetch ]; then
 fi
 pause
 
-log_section "Building and Installing LY Display Manager"
+log_section "Building and Installing ly Display Manager"
 if [ ! -f /usr/local/bin/ly ]; then
     curl -sLO https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz
     tar -xf zig-linux-x86_64-0.14.0.tar.xz
@@ -111,7 +110,5 @@ if [ ! -f /usr/local/bin/betterlockscreen ]; then
     cd /tmp/betterlockscreen
     sudo install -Dm755 betterlockscreen /usr/local/bin/
 fi
-pause
 
-log_section "Installation Complete"
-echo "You can now run the userInstall.sh script and then reboot your system"
+echo "System instllation finished. You can reboot now and then run userInstall.sh."
