@@ -48,8 +48,8 @@ apt-get install -y bluez bluez-tools
 systemctl enable bluetooth
 pause
 
-log_section "Installing System Utilities"
-apt-get install -y htop bc smartmontools network-manager
+log_section "Installing System Utilities and Shell"
+apt-get install -y htop bc smartmontools network-manager zsh
 pause
 
 log_section "Installing Applications"
@@ -88,7 +88,7 @@ pause
 
 set +e
 
-log_section "Configuring Spotify Desktop Entry"
+log_section "Configuring Desktop Files"
 spotify_icon_dir="$USER_HOME/.local/share/applications"
 mkdir -p "$spotify_icon_dir"
 cat > "$spotify_icon_dir/spotify.desktop" << EOF
@@ -102,14 +102,15 @@ Terminal=false
 Categories=Audio;Music;Player;
 EOF
 chown "$REAL_USER:$REAL_USER" "$spotify_icon_dir/spotify.desktop"
-pause
-
-log_section "Cleaning Desktop Files"
 rm -f /usr/share/applications/{rofi-theme-selector,org.pulseaudio.pavucontrol,rofi,thunar-settings,display-im7.q16}.desktop 2>/dev/null
 pause
 
-log_section "Setting Default Shell"
-chsh -s "$(which zsh)" "$REAL_USER"
+log_section "Installing and Configuring Betterlockscreen"
+if [ ! -f /usr/local/bin/betterlockscreen ]; then
+    git clone https://github.com/betterlockscreen/betterlockscreen.git /tmp/betterlockscreen
+    cd /tmp/betterlockscreen
+    sudo install -Dm755 betterlockscreen /usr/local/bin/
+fi
 pause
 
 log_section "Installation Complete"
