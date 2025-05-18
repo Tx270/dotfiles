@@ -62,6 +62,7 @@ fi
 apt-get install -y spotify-client
 pause
 
+set -e
 log_section "Building and Installing Neofetch"
 if [ ! -f /usr/local/bin/neofetch ]; then
     git clone https://github.com/dylanaraps/neofetch.git /tmp/neofetch
@@ -73,19 +74,19 @@ pause
 
 log_section "Building and Installing LY Display Manager"
 if [ ! -f /usr/local/bin/ly ]; then
-    set -e
     curl -sLO https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz
     tar -xf zig-linux-x86_64-0.14.0.tar.xz
     export PATH="$PWD/zig-linux-x86_64-0.14.0:$PATH"
-    git clone --quiet https://github.com/cylgom/ly.git /tmp/ly
+    git clone https://github.com/cylgom/ly.git /tmp/ly
     cd /tmp/ly
     zig build
     zig build installexe
     systemctl enable ly.service
     rm -rf "$PWD/zig-linux-x86_64-0.14.0" "$PWD/zig-linux-x86_64-0.14.0.tar.xz" /tmp/ly
-    set +e
 fi
 pause
+
+set +e
 
 log_section "Configuring Spotify Desktop Entry"
 spotify_icon_dir="$USER_HOME/.local/share/applications"
