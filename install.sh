@@ -61,32 +61,6 @@ fi
 apt-get install -y spotify-client firefox-esr thunar
 pause
 
-set -e
-log_section "Building and Installing Neofetch"
-if [ ! -f /usr/local/bin/neofetch ]; then
-    git clone https://github.com/dylanaraps/neofetch.git /tmp/neofetch
-    cd /tmp/neofetch
-    make
-    make install
-fi
-pause
-
-log_section "Building and Installing ly Display Manager"
-if [ ! -f /usr/local/bin/ly ]; then
-    curl -sLO https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz
-    tar -xf zig-linux-x86_64-0.14.0.tar.xz
-    export PATH="$PWD/zig-linux-x86_64-0.14.0:$PATH"
-    git clone https://github.com/cylgom/ly.git /tmp/ly
-    cd /tmp/ly
-    zig build
-    zig build installexe
-    systemctl enable ly.service
-    rm -rf "$PWD/zig-linux-x86_64-0.14.0" "$PWD/zig-linux-x86_64-0.14.0.tar.xz" /tmp/ly
-fi
-pause
-
-set +e
-
 log_section "Configuring Desktop Files"
 spotify_icon_dir="$USER_HOME/.local/share/applications"
 mkdir -p "$spotify_icon_dir"
@@ -104,11 +78,43 @@ chown "$REAL_USER:$REAL_USER" "$spotify_icon_dir/spotify.desktop"
 rm -f /usr/share/applications/{rofi-theme-selector,org.pulseaudio.pavucontrol,rofi,thunar-settings,display-im7.q16}.desktop 2>/dev/null
 pause
 
-log_section "Installing and Configuring Betterlockscreen"
-if [ ! -f /usr/local/bin/betterlockscreen ]; then
-    git clone https://github.com/betterlockscreen/betterlockscreen.git /tmp/betterlockscreen
-    cd /tmp/betterlockscreen
-    sudo install -Dm755 betterlockscreen /usr/local/bin/
+set -e
+
+log_section "Building and Installing Neofetch"
+if [ ! -f /usr/bin/neofetch ]; then
+    git clone https://github.com/dylanaraps/neofetch.git /tmp/neofetch
+    cd /tmp/neofetch
+    make install
 fi
+pause
+
+log_section "Building and Installing ly Display Manager"
+if [ ! -f /usr/bin/ly ]; then
+    curl -sLO https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz
+    tar -xf zig-linux-x86_64-0.14.0.tar.xz
+    export PATH="$PWD/zig-linux-x86_64-0.14.0:$PATH"
+    git clone https://github.com/cylgom/ly.git /tmp/ly
+    cd /tmp/ly
+    zig build
+    zig build installexe
+    systemctl enable ly.service
+    rm -rf "$PWD/zig-linux-x86_64-0.14.0" "$PWD/zig-linux-x86_64-0.14.0.tar.xz" /tmp/ly
+fi
+pause
+
+log_section "Building and Installing Betterlockscreen"
+if [ ! -f /usr/local/bin/betterlockscreen ]; then
+    echo "Instalacja betterlockscreen..."
+    wget https://github.com/betterlockscreen/betterlockscreen/archive/refs/heads/main.zip -O /tmp/betterlockscreen.zip
+    unzip /tmp/betterlockscreen.zip -d /tmp
+    cd /tmp/betterlockscreen-main
+
+    chmod +x betterlockscreen
+    sudo cp betterlockscreen /usr/local/bin/
+
+    sudo cp system/betterlockscreen@.service /usr/lib/systemd/system/
+    sudo systemctl enable betterlockscreen@$REAL_USER
+fi
+pause
 
 echo "System instllation finished. You can reboot now and then run userInstall.sh."
