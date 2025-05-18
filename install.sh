@@ -24,7 +24,7 @@ apt-get upgrade -y
 pause
 
 log_section "Installing Essential Packages"
-apt-get install -y curl git stow build-essential libpam0g-dev libxcb-xkb-dev python3-pip python3-venv
+apt-get install -y curl git stow build-essential libpam0g-dev libxcb-xkb-dev python3-pip python3-venv imagemagick autoconf pkg-config libpam0g-dev libcairo2-dev libfontconfig1-dev libxcb-composite0-dev libev-dev libx11-xcb-dev libxcb-xkb-dev libxcb-xinerama0-dev libxcb-randr0-dev libxcb-image0-dev libxcb-util0-dev libxcb-xrm-dev libxkbcommon-dev libxkbcommon-x11-dev libjpeg-dev libgif-dev
 pause
 
 log_section "Installing Desktop Environment"
@@ -49,7 +49,7 @@ systemctl enable bluetooth
 pause
 
 log_section "Installing System Utilities and Shell"
-apt-get install -y htop bc smartmontools network-manager zsh nala zip bat pipx ruby ruby-dev
+apt-get install -y htop bc smartmontools network-manager zsh nala zip bat atuin pipx ruby ruby-dev cargo
 pause
 
 log_section "Installing Applications"
@@ -90,15 +90,25 @@ pause
 
 log_section "Building and Installing ly Display Manager"
 if [ ! -f /usr/bin/ly ]; then
-    curl -sLO https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz
-    tar -xf zig-linux-x86_64-0.14.0.tar.xz
-    export PATH="$PWD/zig-linux-x86_64-0.14.0:$PATH"
+    curl -sLo /tmp/zig.zip https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.zip
+    unzip -q /tmp/zig.zip -d /tmp/zigdir
+    export PATH="/tmp/zigdir/zig-linux-x86_64-0.14.0:$PATH"
     git clone https://github.com/cylgom/ly.git /tmp/ly
     cd /tmp/ly
     zig build
     zig build installexe
-    systemctl enable ly.service
-    rm -rf "$PWD/zig-linux-x86_64-0.14.0" "$PWD/zig-linux-x86_64-0.14.0.tar.xz" /tmp/ly
+    sudo systemctl enable ly.service
+    rm -rf /tmp/zig.zip /tmp/zigdir /tmp/ly
+fi
+pause
+
+log_section "Building and Installing i3lock-color"
+if [ ! -f /usr/local/bin/i3lock-color ]; then
+    git clone https://github.com/Raymo111/i3lock-color.git /tmp/i3lock-color
+    cd /tmp/i3lock-color
+    ./install-i3lock-color.sh
+    cd /tmp
+    rm -rf /tmp/i3lock-color
 fi
 pause
 
