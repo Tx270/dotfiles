@@ -49,7 +49,7 @@ systemctl enable bluetooth
 pause
 
 log_section "Installing System Utilities and Shell"
-apt-get install -y htop bc smartmontools network-manager zsh nala zip batcat pipx ruby ruby-dev
+apt-get install -y htop bc smartmontools network-manager zsh nala zip bat pipx ruby ruby-dev
 pause
 
 log_section "Installing Applications"
