@@ -90,15 +90,13 @@ pause
 
 log_section "Building and Installing ly Display Manager"
 if [ ! -f /usr/bin/ly ]; then
-    curl -sLo /tmp/zig.zip https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.zip
-    unzip -q /tmp/zig.zip -d /tmp/zigdir
-    export PATH="/tmp/zigdir/zig-linux-x86_64-0.14.0:$PATH"
-    git clone https://github.com/cylgom/ly.git /tmp/ly
-    cd /tmp/ly
-    zig build
-    zig build installexe
-    sudo systemctl enable ly.service
-    rm -rf /tmp/zig.zip /tmp/zigdir /tmp/ly
+  curl -fsSL https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz -o /tmp/zig.tar.xz
+  mkdir -p /tmp/zigdir && tar -xf /tmp/zig.tar.xz -C /tmp/zigdir
+  export PATH="/tmp/zigdir/zig-linux-x86_64-0.14.0:$PATH"
+  git clone https://github.com/cylgom/ly.git /tmp/ly && cd /tmp/ly
+  zig build && zig build installexe
+  sudo systemctl enable ly.service
+  rm -rf /tmp/zig.tar.xz /tmp/zigdir /tmp/ly
 fi
 pause
 
