@@ -19,63 +19,32 @@ REAL_USER=$(logname)
 USER_HOME="/home/$REAL_USER"
 
 log_section "Updating System"
-apt-get update
-apt-get upgrade -y
+dnf update -y
 pause
 
 log_section "Installing Essential Packages"
-apt-get install -y curl git stow build-essential libpam0g-dev libxcb-xkb-dev python3-pip python3-venv imagemagick autoconf pkg-config libpam0g-dev libcairo2-dev libfontconfig1-dev libxcb-composite0-dev libev-dev libx11-xcb-dev libxcb-xkb-dev libxcb-xinerama0-dev libxcb-randr0-dev libxcb-image0-dev libxcb-util0-dev libxcb-xrm-dev libxkbcommon-dev libxkbcommon-x11-dev libjpeg-dev libgif-dev
+dnf install -y curl git stow @development-tools pam-devel xcb-util-keysyms-devel python3-pip python3-virtualenv ImageMagick autoconf pkgconfig cairo-devel fontconfig-devel xcb-util-composite-devel libev-devel libX11-xcb-devel xcb-util-keysyms-devel xcb-util-image-devel xcb-util-devel xcb-util-xrm-devel xkbcommon-devel xkbcommon-x11-devel libjpeg-turbo-devel giflib-devel
 pause
 
 log_section "Installing Desktop Environment"
-apt-get install -y xorg xinit i3 xcompmgr i3lock
+dnf install -y @x11 xorg-x11-xinit i3 xcompmgr i3lock
 pause
 
 log_section "Installing UI Components"
-apt-get install -y polybar rofi dunst feh maim xclip xsel libnotify-bin
+dnf install -y polybar rofi dunst feh maim xclip xsel libnotify
 pause
 
-log_section "Installing Terminal and Editor"
-apt-get install -y kitty neovim
-pause
-
-log_section "Installing Audio System"
-apt-get install -y pipewire pipewire-audio-client-libraries libspa-0.2-bluetooth wireplumber pamixer playerctl
-pause
-
-log_section "Installing Bluetooth Support"
-apt-get install -y bluez bluez-tools
+log_section "Installing Audio System and Bluetooth"
+dnf install -y pipewire pipewire-audio-client-libraries wireplumber pamixer playerctl bluez bluez-tools
 systemctl enable bluetooth
 pause
 
 log_section "Installing System Utilities and Shell"
-apt-get install -y htop bc smartmontools network-manager zsh nala zip bat atuin pipx ruby ruby-dev cargo
+dnf install -y kitty neovim htop bc smartmontools NetworkManager zsh zip bat atuin python3-pip pipx ruby ruby-devel cargo
 pause
 
 log_section "Installing Applications"
-if [ ! -f /etc/apt/sources.list.d/spotify.list ]; then
-    curl -sS https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-    echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-    apt-get update
-fi
-apt-get install -y spotify-client firefox-esr thunar
-pause
-
-log_section "Configuring Desktop Files"
-spotify_icon_dir="$USER_HOME/.local/share/applications"
-mkdir -p "$spotify_icon_dir"
-cat > "$spotify_icon_dir/spotify.desktop" << EOF
-[Desktop Entry]
-Type=Application
-Name=Spotify
-GenericName=Music Player
-Icon=/usr/share/icons/hicolor/256x256/apps/spotify.png
-Exec=spotify %U
-Terminal=false
-Categories=Audio;Music;Player;
-EOF
-chown "$REAL_USER:$REAL_USER" "$spotify_icon_dir/spotify.desktop"
-rm -f /usr/share/applications/{rofi-theme-selector,org.pulseaudio.pavucontrol,rofi,thunar-settings,display-im7.q16}.desktop 2>/dev/null
+dnf install -y firefox thunar
 pause
 
 set -e
@@ -95,7 +64,7 @@ if [ ! -f /usr/bin/ly ]; then
   export PATH="/tmp/zigdir/zig-linux-x86_64-0.14.0:$PATH"
   git clone https://github.com/cylgom/ly.git /tmp/ly && cd /tmp/ly
   zig build && zig build installexe
-  sudo systemctl enable ly.service
+  systemctl enable ly.service
   rm -rf /tmp/zig.tar.xz /tmp/zigdir /tmp/ly
 fi
 pause
@@ -112,17 +81,16 @@ pause
 
 log_section "Building and Installing Betterlockscreen"
 if [ ! -f /usr/local/bin/betterlockscreen ]; then
-    echo "Instalacja betterlockscreen..."
     wget https://github.com/betterlockscreen/betterlockscreen/archive/refs/heads/main.zip -O /tmp/betterlockscreen.zip
     unzip /tmp/betterlockscreen.zip -d /tmp
     cd /tmp/betterlockscreen-main
 
     chmod +x betterlockscreen
-    sudo cp betterlockscreen /usr/local/bin/
+    cp betterlockscreen /usr/local/bin/
 
-    sudo cp system/betterlockscreen@.service /usr/lib/systemd/system/
-    sudo systemctl enable betterlockscreen@$REAL_USER
+    cp system/betterlockscreen@.service /usr/lib/systemd/system/
+    systemctl enable betterlockscreen@$REAL_USER
 fi
 pause
 
-echo "System instllation finished. You can reboot now and then run userInstall.sh."
+echo "System installation finished. You can reboot now and then run userInstall.sh."
