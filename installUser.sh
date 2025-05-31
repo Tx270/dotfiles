@@ -27,22 +27,23 @@ sudo chsh -s "$(which zsh)" "$USER"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
-if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]; then
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+if [ ! -d "$ZSH_CUSTOM/themes/powerlevel10k" ]; then
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k"
 fi
-if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
 fi
-if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
-if [ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom/}/plugins/zsh-allclear" ]; then
-    git clone https://github.com/givensuman/zsh-allclear ${ZSH_CUSTOM:-~/.oh-my-zsh/custom/}/plugins/zsh-allclear
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-allclear" ]; then
+    git clone https://github.com/givensuman/zsh-allclear "$ZSH_CUSTOM/plugins/zsh-allclear"
 fi
 pause
 
 log_section "Configuring Audio"
-systemctl --user mask pulseaudio.socket pulseaudio.service
+systemctl --user mask pulseaudio.socket pulseaudio.service || true
 systemctl --user --now enable pipewire pipewire-pulse wireplumber
 pause
 
@@ -60,12 +61,14 @@ export PATH="$HOME/.cargo/bin:$PATH"
 pause
 
 log_section "Installing Ruby Tools"
-[ ! -f /usr/local/bin/colorls ] && sudo gem install colorls
+if ! command -v colorls &> /dev/null; then
+    gem install colorls --user-install
+fi
 pause
 
 log_section "Applying Dotfiles"
 rm -rf ~/.config/neofetch ~/.zshrc ~/.config/i3
-cd ~/.dotfiles
+cd ~/.dotfiles || exit 1
 stow */
 find ~/.config -name "*.sh" -type f -exec chmod +x {} \;
 pause
