@@ -23,11 +23,11 @@ dnf update -y
 pause
 
 log_section "Installing Essential Packages"
-dnf install -y curl git stow @development-tools pam-devel xcb-util-keysyms-devel python3-pip python3-virtualenv ImageMagick autoconf pkgconfig cairo-devel fontconfig-devel xcb-util-composite-devel libev-devel libX11-xcb-devel xcb-util-keysyms-devel xcb-util-image-devel xcb-util-devel xcb-util-xrm-devel xkbcommon-devel xkbcommon-x11-devel libjpeg-turbo-devel giflib-devel
+dnf install -y curl git wget stow @development-tools pam-devel xcb-util-keysyms-devel python3-pip python3-virtualenv ImageMagick tar autoconf automake cairo-devel fontconfig gcc libev-devel libjpeg-turbo-devel libXinerama libxkbcommon-devel libxkbcommon-x11-devel libXrandr pam-devel pkgconf xcb-util-image-devel xcb-util-xrm-devel
 pause
 
 log_section "Installing Desktop Environment"
-dnf install -y @x11 xorg-x11-xinit i3 xcompmgr i3lock
+dnf install -y @base-x i3 xcompmgr
 pause
 
 log_section "Installing UI Components"
@@ -35,7 +35,7 @@ dnf install -y polybar rofi dunst feh maim xclip xsel libnotify
 pause
 
 log_section "Installing Audio System and Bluetooth"
-dnf install -y pipewire pipewire-audio-client-libraries wireplumber pamixer playerctl bluez bluez-tools
+dnf install -y pipewire wireplumber pamixer playerctl bluez bluez-tools
 systemctl enable bluetooth
 pause
 
@@ -72,9 +72,7 @@ pause
 log_section "Building and Installing i3lock-color"
 if [ ! -f /usr/local/bin/i3lock-color ]; then
     git clone https://github.com/Raymo111/i3lock-color.git /tmp/i3lock-color
-    cd /tmp/i3lock-color
-    ./install-i3lock-color.sh
-    cd /tmp
+    ( cd /tmp/i3lock-color && sudo ./install-i3lock-color.sh )
     rm -rf /tmp/i3lock-color
 fi
 pause
@@ -83,13 +81,14 @@ log_section "Building and Installing Betterlockscreen"
 if [ ! -f /usr/local/bin/betterlockscreen ]; then
     wget https://github.com/betterlockscreen/betterlockscreen/archive/refs/heads/main.zip -O /tmp/betterlockscreen.zip
     unzip /tmp/betterlockscreen.zip -d /tmp
-    cd /tmp/betterlockscreen-main
-
-    chmod +x betterlockscreen
-    cp betterlockscreen /usr/local/bin/
-
-    cp system/betterlockscreen@.service /usr/lib/systemd/system/
-    systemctl enable betterlockscreen@$REAL_USER
+    (
+        cd /tmp/betterlockscreen-main || exit 1
+        chmod +x betterlockscreen
+        sudo cp betterlockscreen /usr/local/bin/
+        sudo cp system/betterlockscreen@.service /usr/lib/systemd/system/
+        sudo systemctl enable betterlockscreen@$REAL_USER
+    )
+    rm -rf /tmp/betterlockscreen.zip /tmp/betterlockscreen-main
 fi
 pause
 
