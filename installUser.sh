@@ -67,6 +67,7 @@ rm -rf ~/.config/neofetch ~/.zshrc ~/.config/i3
 cd ~/.dotfiles || exit 1
 stow */
 find ~/.config -name "*.sh" -type f -exec chmod +x {} \;
+echo "exec i3" > ~/.xinitrc
 pause
 
 log_section "Setting up Sysmonitor script"
