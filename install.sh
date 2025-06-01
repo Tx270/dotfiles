@@ -23,7 +23,7 @@ dnf update -y
 pause
 
 log_section "Installing Essential Packages"
-dnf install -y curl git wget stow @development-tools pam-devel xcb-util-keysyms-devel python3-pip python3-virtualenv ImageMagick tar autoconf automake cairo-devel fontconfig gcc libev-devel libjpeg-turbo-devel libXinerama libxkbcommon-devel libxkbcommon-x11-devel libXrandr pam-devel pkgconf xcb-util-image-devel xcb-util-xrm-devel giflib-devel
+dnf install -y curl git wget stow @development-tools pam-devel xcb-util-keysyms-devel python3-pip python3-virtualenv ImageMagick tar autoconf automake cairo-devel fontconfig gcc libev-devel libjpeg-turbo-devel libXinerama libxkbcommon-devel libxkbcommon-x11-devel libXrandr pam-devel pkgconf xcb-util-image-devel xcb-util-xrm-devel giflib-devel cronie
 pause
 
 log_section "Installing Desktop Environment"
