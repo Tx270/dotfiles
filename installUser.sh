@@ -54,13 +54,9 @@ if ! command -v wal &> /dev/null; then
 fi
 pause
 
-log_section "Installing Cargo Tools"
+log_section "Compiling Cargo and Ruby Tools"
 export PATH="$HOME/.cargo/bin:$PATH"
-[ ! -f ~/.cargo/bin/yazi ] && cargo install yazi-fm
 [ ! -f ~/.cargo/bin/xcolor ] && cargo install xcolor
-pause
-
-log_section "Installing Ruby Tools"
 if ! command -v colorls &> /dev/null; then
     gem install colorls --user-install
 fi
