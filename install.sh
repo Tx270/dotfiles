@@ -40,7 +40,8 @@ systemctl enable bluetooth
 pause
 
 log_section "Installing System Utilities and Shell"
-dnf install -y kitty neovim htop bc smartmontools NetworkManager zsh zip bat atuin python3-pip pipx ruby ruby-devel cargo
+dnf copr enable lihaohong/yazi
+dnf install -y kitty neovim htop bc smartmontools NetworkManager NetworkManager-wifi zsh zip bat atuin python3-pip pipx ruby ruby-devel cargo yazi
 pause
 
 log_section "Installing Applications"
@@ -52,8 +53,7 @@ set -e
 log_section "Building and Installing Neofetch"
 if [ ! -f /usr/bin/neofetch ]; then
     git clone https://github.com/dylanaraps/neofetch.git /tmp/neofetch
-    cd /tmp/neofetch
-    make install
+    ( cd /tmp/neofetch && make install )
 fi
 pause
 
@@ -72,7 +72,7 @@ pause
 log_section "Building and Installing i3lock-color"
 if [ ! -f /usr/local/bin/i3lock-color ]; then
     git clone https://github.com/Raymo111/i3lock-color.git /tmp/i3lock-color
-    ( cd /tmp/i3lock-color && sudo ./install-i3lock-color.sh )
+    ( cd /tmp/i3lock-color && ./install-i3lock-color.sh )
     rm -rf /tmp/i3lock-color
 fi
 pause
@@ -84,9 +84,9 @@ if [ ! -f /usr/local/bin/betterlockscreen ]; then
     (
         cd /tmp/betterlockscreen-main || exit 1
         chmod +x betterlockscreen
-        sudo cp betterlockscreen /usr/local/bin/
-        sudo cp system/betterlockscreen@.service /usr/lib/systemd/system/
-        sudo systemctl enable betterlockscreen@$REAL_USER
+        cp betterlockscreen /usr/local/bin/
+        cp system/betterlockscreen@.service /usr/lib/systemd/system/
+        systemctl enable betterlockscreen@$REAL_USER
     )
     rm -rf /tmp/betterlockscreen.zip /tmp/betterlockscreen-main
 fi
