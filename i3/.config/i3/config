@@ -1,13 +1,18 @@
-# https://i3wm.org/docs/userguide.html
-
 set $mod Mod4
+set $TOUCHPAD_ID 9
 
-exec --no-startup-id xcompmgr -c -t-4 -l-4 -r3.5 -o.75 -f -D 1
+exec --no-startup-id feh --bg-fill --image-bg black
+exec --no-startup-id picom
 exec --no-startup-id date +%s > /tmp/network_event_timestamp
-exec --no-startup-id /home/tx27/.config/wal/wal.sh -q
-exec_always --no-startup-id /home/tx27/.config/polybar/launch.sh
+exec --no-startup-id ~/.config/wal/wal.sh -q
+exec --no-startup-id xinput set-prop $TOUCHPAD_ID "libinput Tapping Enabled" 1
+exec --no-startup-id xinput set-prop $TOUCHPAD_ID "libinput Natural Scrolling Enabled" 1
+exec --no-startup-id redshift
+exec --no-startup-id udiskie
+exec --no-startup-id libinput-gestures
+exec_always --no-startup-id ~/.config/polybar/launch.sh
 
-font pango:Meslo LGM Nerd Font 10
+font pango:Meslo LGM Nerd Font 9
 
 gaps inner 4
 gaps outer 3
@@ -16,39 +21,40 @@ bindsym $mod+minus gaps inner current minus 1; gaps outer current minus 1
 
 for_window [class="^.*"] border pixel 3
 
-# Start XDG autostart .desktop files using dex. See also
-# https://wiki.archlinux.org/index.php/XDG_Autostart
-exec --no-startup-id dex --autostart --environment i3
-
 exec --no-startup-id xss-lock --transfer-sleep-lock -- betterlockscreen -l
 
-# NetworkManager is the most popular way to manage wireless networks on Linux,
-# and nm-applet is a desktop environment-independent system tray GUI for it.
-exec --no-startup-id nm-applet
-
 set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -i 10 && $refresh_i3status"
-bindsym XF86AudioLowerVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -d 10 && $refresh_i3status"
+bindsym XF86AudioRaiseVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -i 5 && $refresh_i3status"
+bindsym XF86AudioLowerVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -d 5 && $refresh_i3status"
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
-# Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
+bindsym XF86MonBrightnessDown exec --no-startup-id ~/.config/i3/scripts/brightness.sh -d
+bindsym XF86MonBrightnessUp exec --no-startup-id ~/.config/i3/scripts/brightness.sh -i
 
-# move tiling windows via drag & drop by left-clicking into the title bar,
-# or left-clicking anywhere into the window while holding the floating modifier.
-tiling_drag modifier titlebar
+#floating_modifier $mod
+#tiling_drag modifier titlebar
 
 bindsym $mod+Return exec kitty
-
+bindsym $mod+Delete exec betterlockscreen -l
+bindsym $mod+t exec kitty -e htop
+bindsym $mod+b exec firefox
+bindsym $mod+y exec env EDITOR=nvim VISUAL=nvim kitty -e yazi
 bindsym $mod+q kill
 
-bindcode $mod+40 exec /home/tx27/.config/rofi/launcher.sh
+bindsym $mod+Control+Right exec playerctl next
+bindsym $mod+Control+Left exec playerctl previous
+bindsym $mod+Control+Up exec pamixer -i 5
+bindsym $mod+Control+Down exec pamixer -d 5
+bindsym $mod+Control+Return exec ~/.config/polybar/scripts/playerctl.sh --play-pause
+
+bindcode $mod+40 exec ~/.config/rofi/launcher.sh
 
 bindsym Print exec --no-startup-id sh -c 'maim -s "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
-bindsym Shift+Print exec --no-startup-id sh -c 'maim "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
+bindsym $mod+Print exec --no-startup-id sh -c 'maim "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
+bindsym $mod+Shift+Print exec --no-startup-id sh -c 'maim -i $(xdotool getactivewindow) "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
 
-bindsym F9 exec --no-startup-id sh -c '/home/tx27/.cargo/bin/xcolor | tr -d "\n" | xclip -selection clipboard'
+bindsym F9 exec --no-startup-id sh -c "~/.cargo/bin/xcolor | tr -d '\n' | xclip -selection clipboard && notify-send 'Color copied to clipboard'"
 
 bindsym $mod+j focus left
 bindsym $mod+k focus down
@@ -80,11 +86,9 @@ bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
-# toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
-
-# change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
+for_window [class="^(Display|feh)$"] floating enable
 
 set $ws1 "1"
 set $ws2 "2"
@@ -121,7 +125,7 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
-bindsym $mod+Shift+w exec --no-startup-id /home/tx27/.config/wal/wal.sh
+bindsym $mod+Shift+w exec --no-startup-id ~/.config/wal/wal.sh
 
 mode "resize" {
         bindsym j resize shrink width 10 px or 10 ppt
@@ -153,10 +157,10 @@ set_from_resource $color6 i3wm.color6 #f0f0f0
 set_from_resource $color7 i3wm.color7 #f0f0f0
 set_from_resource $color8 i3wm.color8 #f0f0f0
 
-# class                 border  backgr. text    indicator child_border
-client.focused          $color5 $color5 $bg     $color6   $color5
-client.focused_inactive $color8 $bg     $fg     $color6   $color8
-client.unfocused        $color8 $bg     $fg     $color6   $color8
-client.urgent           $color3 $bg     $color3 $color8   $color3
-client.placeholder      $color8 $bg     $fg     $color8   $color8
+# class                 border   backgr. text    indicator child_border
+client.focused          $color5  $color5 $bg     $color6   $color5
+client.focused_inactive $color8  $bg     $fg     $color6   $color8
+client.unfocused        $color8  $bg     $fg     $color6   $color8
+client.urgent           $color3  $bg     $color3 $color8   $color3
+client.placeholder      $color8  $bg     $fg     $color8   $color8
 client.background       $bg

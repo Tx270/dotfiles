@@ -1,9 +1,9 @@
 #!/bin/bash
 
-source "$HOME/.cache/wal/colors.sh" # dodane
+source "$HOME/.cache/wal/colors.sh"
 
-wifi_interface="wlan0"
-ethernet_interface="enp0s3"
+NET_IFACE=$(ip route | awk '/^default/ { print $5 }')
+ETH_IFACE=$(ip link | awk -F: '/^[0-9]+: en/{gsub(" ", "", $2); print $2}' | head -n 1)
 test_url="http://nmcheck.gnome.org/check_network_status.txt"
 cache_file="/tmp/internet_status"
 cache_ttl=60
@@ -24,9 +24,9 @@ get_cached_status() {
     fi
   fi
   if check_internet; then
-    echo "online" > "$cache_file"
+    echo "online" >"$cache_file"
   else
-    echo "offline" > "$cache_file"
+    echo "offline" >"$cache_file"
   fi
   cat "$cache_file"
 }
@@ -46,22 +46,31 @@ should_ignore_cache() {
 icon=""
 ssid_text=""
 
-if ip link show "$wifi_interface" &>/dev/null && iw dev "$wifi_interface" link | grep -q "Connected"; then
-  signal=$(grep 'signal' /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')
+if ip link show "$NET_IFACE" &>/dev/null && iw dev "$NET_IFACE" link | grep -q "Connected"; then
+  signal_dbm=$(iw dev "$NET_IFACE" link | grep 'signal:' | awk '{print $2}')
+  if [[ "$signal_dbm" =~ ^-?[0-9]+$ ]]; then
+    signal=$((100 + signal_dbm))
+  else
+    signal=0
+  fi
+
   if should_ignore_cache; then
     net_status="checking"
   else
     net_status=$(get_cached_status)
   fi
-  if [ "$signal" -gt 70 ]; then icon="󰤨"
-  elif [ "$signal" -gt 40 ]; then icon="󰤥"
-  elif [ "$signal" -gt 20 ]; then icon="󰤟"
+  if [ "$signal" -gt 70 ]; then
+    icon="󰤨"
+  elif [ "$signal" -gt 40 ]; then
+    icon="󰤥"
+  elif [ "$signal" -gt 20 ]; then
+    icon="󰤟"
   else icon="󰤯"; fi
   if [ "$net_status" != "online" ] && [ "$net_status" != "checking" ]; then
     icon="󰤭"
   fi
 
-  ssid=$(iw dev "$wifi_interface" link | grep 'SSID' | cut -d ' ' -f2-)
+  ssid=$(iw dev "$NET_IFACE" link | grep 'SSID' | cut -d ' ' -f2-)
   if [ -n "$ssid" ]; then
     if [ "${#ssid}" -gt 15 ]; then
       ssid_text=" ${ssid:0:15}…"
@@ -69,7 +78,7 @@ if ip link show "$wifi_interface" &>/dev/null && iw dev "$wifi_interface" link |
       ssid_text=" $ssid"
     fi
   fi
-elif ip link show "$ethernet_interface" | grep -q "state UP"; then
+elif ip link show "$ETH_IFACE" | grep -q "state UP"; then
   if should_ignore_cache; then
     net_status="checking"
   else
@@ -78,5 +87,4 @@ elif ip link show "$ethernet_interface" | grep -q "state UP"; then
   icon=$([ "$net_status" = "online" ] && echo "󰈁" || echo "󰈂")
 fi
 
-echo "%{T4}%{F$color9}$icon$ssid_text%{F-}"
-
+echo "%{T3}%{F$color9}$icon%{F-}%{T1}$ssid_text"

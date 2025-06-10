@@ -1,0 +1,9 @@
+[Unit]
+Description=Interception udevmon daemon
+
+[Service]
+ExecStart=/usr/local/bin/udevmon -c /home/tx27/.config/interception/udevmon.yaml
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
