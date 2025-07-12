@@ -17,7 +17,6 @@ xrdb -merge ~/.Xresources
 
 betterlockscreen -u "$wallpaper" --fx none
 
-
 source "/home/tx27/.cache/wal/colors.sh"
 
 bg="${color0}FF"
@@ -27,7 +26,7 @@ selected="${color4}FF"
 active="${color2}FF"
 urgent="${color5}FF"
 
-cat > "/home/tx27/.cache/wal/colors.rasi" <<EOF
+cat >"/home/tx27/.cache/wal/colors.rasi" <<EOF
 * {
   background: ${bg};
   background-alt: ${bg_alt};
@@ -38,6 +37,8 @@ cat > "/home/tx27/.cache/wal/colors.rasi" <<EOF
 }
 EOF
 
+sed -E -i 's/(= )([0-9a-fA-F]{2})([0-9a-fA-F]{6})$/\1\3/' /home/tx27/.cache/wal/colors-polybar
+
 if [[ ! " $@ " =~ " -q " ]]; then
-    notify-send "Changed wallpaper" "Random walpaper was choosen and color palette was modified" -u normal
+  notify-send "Changed wallpaper" "Random walpaper was choosen and color palette was modified" -u normal
 fi

@@ -61,7 +61,8 @@ systemctl enable bluetooth
 pause
 
 log_section "Installing System Utilities and Shell"
-dnf install -q -y kitty neovim htop bc tree smartmontools iwd systemd-resolved zsh zip tar bat atuin python3-pip pipx ruby ruby-devel sudo dnf install udiskie udisks2 preload cargo yazi node npm brightnessctl power-profiles-daemon acpi aerc rsync
+dnf install -q -y kitty neovim htop bc tree smartmontools iwd systemd-resolved zsh zip tar bat atuin python3-pip pipx ruby ruby-devel sudo dnf install udiskie udisks2 preload cargo yazi node npm brightnessctl power-profiles-daemon acpi aerc rsync httpd
+systemctl enable --now httpd
 pause
 
 log_section "Installing Applications"

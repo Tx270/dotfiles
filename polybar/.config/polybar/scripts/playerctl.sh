@@ -24,7 +24,7 @@ for p in "${players[@]}"; do
     echo "$p" >"$LAST_PLAYER_FILE"
     artist=$(playerctl --player="$p" metadata artist 2>/dev/null)
     title=$(playerctl --player="$p" metadata title 2>/dev/null)
-    truncate "%{F$color1}%{T4}%{F-}%{T-} ${artist} - ${title}"
+    truncate "%{F$color1}%{T4}%{F-}%{T-} ${title} - ${artist}"
     exit 0
   fi
 done
@@ -35,7 +35,7 @@ if [[ -f "$LAST_PLAYER_FILE" ]]; then
     if [[ $(playerctl --player="$last" status 2>/dev/null) == "Paused" ]]; then
       artist=$(playerctl --player="$last" metadata artist 2>/dev/null)
       title=$(playerctl --player="$last" metadata title 2>/dev/null)
-      truncate "%{F$color1}%{T1}󰏤%{F-}%{T-} ${artist} - ${title}"
+      truncate "%{F$color1}%{T1}󰏤%{F-}%{T-} ${title} - ${artist}"
       exit 0
     fi
   fi
@@ -46,7 +46,7 @@ for p in "${players[@]}"; do
     echo "$p" >"$LAST_PLAYER_FILE"
     artist=$(playerctl --player="$p" metadata artist 2>/dev/null)
     title=$(playerctl --player="$p" metadata title 2>/dev/null)
-    truncate "%{F$color1}%{T1}󰏤%{F-}%{T-} ${artist} - ${title}"
+    truncate "%{F$color1}%{T1}󰏤%{F-}%{T-} ${title} - ${artist}"
     exit 0
   fi
 done

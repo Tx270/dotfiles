@@ -84,6 +84,7 @@ cd $HOME/.dotfiles || exit 1
 stow */
 find $HOME/.config -name "*.sh" -type f -exec chmod +x {} \;
 echo "exec i3" >$HOME/.xinitrc
+chmod o+x "$HOME"
 pause
 
 log_section "Creating Home Directories"
@@ -104,6 +105,7 @@ for dir in \
   "$XDG_VIDEOS_DIR" "$XDG_PUBLICSHARE_DIR"; do
   mkdir -p "$dir"
 done
+ln -s /run/media/$(whoami) /home/$(whoami)/Other/Discs
 pause
 
 log_section "Setting up Crontab"

@@ -1,8 +1,9 @@
 set $mod Mod4
 set $TOUCHPAD_ID 9
 
+font pango:Meslo LGM Nerd Font 9
+
 exec --no-startup-id feh --bg-fill --image-bg black
-exec --no-startup-id picom
 exec --no-startup-id date +%s > /tmp/network_event_timestamp
 exec --no-startup-id ~/.config/wal/wal.sh -q
 exec --no-startup-id xinput set-prop $TOUCHPAD_ID "libinput Tapping Enabled" 1
@@ -10,30 +11,23 @@ exec --no-startup-id xinput set-prop $TOUCHPAD_ID "libinput Natural Scrolling En
 exec --no-startup-id redshift
 exec --no-startup-id udiskie
 exec --no-startup-id libinput-gestures
+exec_always --no-startup-id ~/.config/i3/scripts/modes.py
 exec_always --no-startup-id ~/.config/polybar/launch.sh
-
-font pango:Meslo LGM Nerd Font 9
-
-gaps inner 4
-gaps outer 3
-bindsym $mod+equal gaps inner current plus 1; gaps outer current plus 1
-bindsym $mod+minus gaps inner current minus 1; gaps outer current minus 1
-
-for_window [class="^.*"] border pixel 3
+exec_always --no-startup-id sh -c 'MODE="$(<~/.config/mode)"; picom --config "$HOME/.config/picom/${MODE}.conf"'
 
 exec --no-startup-id xss-lock --transfer-sleep-lock -- betterlockscreen -l
 
-set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -i 5 && $refresh_i3status"
-bindsym XF86AudioLowerVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -d 5 && $refresh_i3status"
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
-
+bindsym XF86AudioRaiseVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -i 5"
+bindsym XF86AudioLowerVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -d 5"
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 bindsym XF86MonBrightnessDown exec --no-startup-id ~/.config/i3/scripts/brightness.sh -d
 bindsym XF86MonBrightnessUp exec --no-startup-id ~/.config/i3/scripts/brightness.sh -i
 
 #floating_modifier $mod
 #tiling_drag modifier titlebar
+
+for_window [class=".*"] border none
 
 bindsym $mod+Return exec kitty
 bindsym $mod+Delete exec betterlockscreen -l
@@ -53,7 +47,6 @@ bindcode $mod+40 exec ~/.config/rofi/launcher.sh
 bindsym Print exec --no-startup-id sh -c 'maim -s "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
 bindsym $mod+Print exec --no-startup-id sh -c 'maim "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
 bindsym $mod+Shift+Print exec --no-startup-id sh -c 'maim -i $(xdotool getactivewindow) "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
-
 bindsym F9 exec --no-startup-id sh -c "~/.cargo/bin/xcolor | tr -d '\n' | xclip -selection clipboard && notify-send 'Color copied to clipboard'"
 
 bindsym $mod+j focus left
@@ -126,6 +119,9 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+w exec --no-startup-id ~/.config/wal/wal.sh
+
+bindsym $mod+Control+1 exec ~/.config/i3/scripts/modes.sh showy
+bindsym $mod+Control+2 exec ~/.config/i3/scripts/modes.sh focus
 
 mode "resize" {
         bindsym j resize shrink width 10 px or 10 ppt
