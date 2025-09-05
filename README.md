@@ -1,1 +1,1 @@
-Just run the instalation script on a base debian machine and you will have a nice riced i3wm envirement
+The instalation script is to be run on fresh Fedora 42 with nothing installed
