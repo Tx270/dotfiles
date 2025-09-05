@@ -15,6 +15,13 @@ reboot='󰜉 Reboot'
 lock='󰌾 Lock'
 suspend='󰤄 Suspend'
 logout='󰍃 Logout'
+
+fedora=' Fedora'
+windows='󰖳 Windows'
+debian=' Debian'
+uefi=' UEFI Settings'
+
+cancel='󰅖 Cancel'
 yes='󰄬 Yes'
 no='󰅖 No'
 
@@ -44,7 +51,30 @@ confirm_exit() {
   echo -e "$yes\n$no" | confirm_cmd
 }
 
-# Pass variables to rofi dmenu
+# Reboot submenu (instead of confirmation)
+reboot_menu() {
+  options="$fedora\n$windows\n$debian\n$uefi\n$cancel"
+  choice=$(echo -e "$options" | rofi -dmenu -p "Reboot to" -theme ${styles})
+  case "$choice" in
+  $fedora)
+    sudo -n efibootmgr -n 0004 && systemctl reboot
+    ;;
+  $windows)
+    sudo -n efibootmgr -n 0000 && systemctl reboot
+    ;;
+  $debian)
+    sudo -n efibootmgr -n 0002 && systemctl reboot
+    ;;
+  $uefi)
+    systemctl reboot --firmware-setup
+    ;;
+  $cancel | *)
+    exit 0
+    ;;
+  esac
+}
+
+# Pass variables to rofi dmenu (main powermenu)
 run_rofi() {
   echo -e "$lock\n$suspend\n$logout\n$reboot\n$shutdown" | rofi_cmd
 }
@@ -55,8 +85,6 @@ run_cmd() {
   if [[ "$selected" == "$yes" ]]; then
     if [[ $1 == '--shutdown' ]]; then
       systemctl poweroff
-    elif [[ $1 == '--reboot' ]]; then
-      systemctl reboot
     elif [[ $1 == '--suspend' ]]; then
       mpc -q pause
       amixer set Master mute
@@ -76,7 +104,7 @@ $shutdown)
   run_cmd --shutdown
   ;;
 $reboot)
-  run_cmd --reboot
+  reboot_menu
   ;;
 $lock)
   betterlockscreen -l

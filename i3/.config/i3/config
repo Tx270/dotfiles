@@ -1,11 +1,12 @@
 set $mod Mod4
-set $TOUCHPAD_ID 9
+set $TOUCHPAD_ID 14
 
 font pango:Meslo LGM Nerd Font 9
 
-exec --no-startup-id feh --bg-fill --image-bg black
+exec --no-startup-id feh --bg-fill "$(cat ~/.cache/wal/wal)"
 exec --no-startup-id date +%s > /tmp/network_event_timestamp
-exec --no-startup-id ~/.config/wal/wal.sh -q
+exec --no-startup-id betterlockscreen -u "$(cat ~/.cache/wal/wal)" --fx none
+exec --no-startup-id xrdb -merge ~/.Xresources
 exec --no-startup-id xinput set-prop $TOUCHPAD_ID "libinput Tapping Enabled" 1
 exec --no-startup-id xinput set-prop $TOUCHPAD_ID "libinput Natural Scrolling Enabled" 1
 exec --no-startup-id redshift
@@ -14,7 +15,7 @@ exec --no-startup-id libinput-gestures
 exec_always --no-startup-id ~/.config/i3/scripts/modes.py
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 exec_always --no-startup-id sh -c 'MODE="$(<~/.config/mode)"; picom --config "$HOME/.config/picom/${MODE}.conf"'
-
+exec_always --no-startup-id ~/.config/i3/scripts/monitors.sh
 exec --no-startup-id xss-lock --transfer-sleep-lock -- betterlockscreen -l
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -i 5"
@@ -30,11 +31,12 @@ bindsym XF86MonBrightnessUp exec --no-startup-id ~/.config/i3/scripts/brightness
 for_window [class=".*"] border none
 
 bindsym $mod+Return exec kitty
-bindsym $mod+Delete exec betterlockscreen -l
 bindsym $mod+t exec kitty -e htop
 bindsym $mod+b exec firefox
 bindsym $mod+y exec env EDITOR=nvim VISUAL=nvim kitty -e yazi
+
 bindsym $mod+q kill
+bindsym $mod+Delete exec betterlockscreen -l
 
 bindsym $mod+Control+Right exec playerctl next
 bindsym $mod+Control+Left exec playerctl previous
@@ -42,11 +44,12 @@ bindsym $mod+Control+Up exec pamixer -i 5
 bindsym $mod+Control+Down exec pamixer -d 5
 bindsym $mod+Control+Return exec ~/.config/polybar/scripts/playerctl.sh --play-pause
 
+bindsym $mod+a exec xdotool key F5
+
 bindcode $mod+40 exec ~/.config/rofi/launcher.sh
 
-bindsym Print exec --no-startup-id sh -c 'maim -s "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
-bindsym $mod+Print exec --no-startup-id sh -c 'maim "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
-bindsym $mod+Shift+Print exec --no-startup-id sh -c 'maim -i $(xdotool getactivewindow) "$HOME/Pictures/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures folder"'
+bindsym Print exec --no-startup-id sh -c 'maim -s "$HOME/Pictures/Screenshots/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures/Screenshots folder"'
+bindsym $mod+Print exec --no-startup-id sh -c 'maim "$HOME/Pictures/Screenshots/screenshot_$(date +%s).png" && notify-send "Screenshot saved" "You can find it in the Pictures/Screenshots folder"'
 bindsym F9 exec --no-startup-id sh -c "~/.cargo/bin/xcolor | tr -d '\n' | xclip -selection clipboard && notify-send 'Color copied to clipboard'"
 
 bindsym $mod+j focus left
@@ -123,6 +126,10 @@ bindsym $mod+Shift+w exec --no-startup-id ~/.config/wal/wal.sh
 bindsym $mod+Control+1 exec ~/.config/i3/scripts/modes.sh showy
 bindsym $mod+Control+2 exec ~/.config/i3/scripts/modes.sh focus
 
+bindsym $mod+Control+b exec ~/.config/i3/scripts/monitors.sh 1
+bindsym $mod+Control+m exec ~/.config/i3/scripts/monitors.sh 2
+bindsym $mod+Control+l exec ~/.config/i3/scripts/monitors.sh 3
+
 mode "resize" {
         bindsym j resize shrink width 10 px or 10 ppt
         bindsym k resize grow height 10 px or 10 ppt
@@ -160,3 +167,4 @@ client.unfocused        $color8  $bg     $fg     $color6   $color8
 client.urgent           $color3  $bg     $color3 $color8   $color3
 client.placeholder      $color8  $bg     $fg     $color8   $color8
 client.background       $bg
+

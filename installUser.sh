@@ -1,8 +1,8 @@
 #!/bin/bash
 
-LOG_FILE="$HOME/installation-log"
+LOG_FILE="/home/$(logname)/installation-log-$(date +'%Y%m%d-%H%M%S')"
 exec > >(tee -a "$LOG_FILE") 2>&1
-set -euo pipefail
+set -eo pipefail
 
 PAUSE=0
 [[ "$1" == "--pause" ]] && PAUSE=1
@@ -11,7 +11,9 @@ log_section() {
   echo -e "\n\033[1;34m===== $1 =====\033[0m"
 }
 pause() {
-  [[ "$PAUSE" -eq 0 ]] && read -p "Press Enter to continue..."
+  if [[ "$PAUSE" -eq 1 ]]; then
+    read -p "Press Enter to continue..."
+  fi
 }
 
 if [ "$(id -u)" = 0 ]; then
@@ -22,7 +24,9 @@ fi
 log_section "Setting up Fonts"
 if [ ! -d "$HOME/.local/share/fonts/Meslo" ]; then
   mkdir -p "$HOME/.local/share/fonts/" && cd /tmp || exit 1
+  echo "eeeee"
   wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip -O Meslo.zip || exit 2
+  echo "eeeee"
   unzip -oq Meslo.zip -d Meslo || exit 3
   rm Meslo.zip
   mv Meslo "$HOME/.local/share/fonts" || exit 4

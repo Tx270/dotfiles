@@ -2,7 +2,7 @@
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:/usr/local/bin:/usr/bin:/bin"
 
-cd ~/.config/backgrounds
+cd ~/Pictures/Backgrounds
 wallpaper=$(find -type f | shuf -n 1)
 
 wal -i "$wallpaper" -q --backend "wal"
@@ -39,6 +39,14 @@ EOF
 
 sed -E -i 's/(= )([0-9a-fA-F]{2})([0-9a-fA-F]{6})$/\1\3/' /home/tx27/.cache/wal/colors-polybar
 
-if [[ ! " $@ " =~ " -q " ]]; then
-  notify-send "Changed wallpaper" "Random walpaper was choosen and color palette was modified" -u normal
-fi
+for i in {0..15}; do
+  export color$i
+done
+export background="$wallpaper"
+
+template="$HOME/.config/wal/templates/lightdm"
+output="$HOME/.config/lightdm/mini-greeter.conf"
+envsubst <"$template" >"$output"
+chmod 640 "$output"
+
+notify-send "Changed wallpaper" "Random walpaper was choosen and color palette was modified" -u normal

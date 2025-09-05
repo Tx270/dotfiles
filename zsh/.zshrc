@@ -40,6 +40,7 @@ alias cat='bat'
 alias catx='copyfile'
 alias pwdx='copypath'
 alias icat='kitten icat'
+alias fzf='fzf --style=full'
 
 alias rm='echo "This is not the command you are looking for."; false'
 alias refresh='source ~/.zshrc && echo "Refreshed terminal source"'

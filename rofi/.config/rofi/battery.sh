@@ -7,7 +7,7 @@ current_profile="$(powerprofilesctl get)"
 
 battery_status=$(acpi -b | grep "Battery 0" | awk -F': ' '{print $2}')
 if [[ -z "$battery_status" ]]; then
-  battery_status="Brak danych o baterii"
+  battery_status="No battery data avalable"
 fi
 
 options=("󰾆 Power Saver" "󰾅 Balanced" "󰓅 Performance")
@@ -17,10 +17,16 @@ menu=""
 selected_row=0
 for i in "${!options[@]}"; do
   if [[ "${profiles[i]}" == "$current_profile" ]]; then
-    menu+="${options[i]}  <-\n"
+    line="${options[i]}  <-"
     selected_row=$i
   else
-    menu+="${options[i]}\n"
+    line="${options[i]}"
+  fi
+
+  if ((i == ${#options[@]} - 1)); then
+    menu+="$line"
+  else
+    menu+="$line\n"
   fi
 done
 

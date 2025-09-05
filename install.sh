@@ -1,8 +1,9 @@
 #!/bin/bash
 
-LOG_FILE="$HOME/installation-log-$(date +'%Y%m%d-%H%M%S')"
+LOG_FILE="/home/$(logname)/installation-log-$(date +'%Y%m%d-%H%M%S')"
+
 exec > >(tee -a "$LOG_FILE") 2>&1
-set -euo pipefail
+set -eo pipefail
 
 PAUSE=0
 [[ "$1" == "--pause" ]] && PAUSE=1
@@ -11,7 +12,9 @@ log_section() {
   echo -e "\n\033[1;34m===== $1 =====\033[0m"
 }
 pause() {
-  [[ "$PAUSE" -eq 0 ]] && read -p "Press Enter to continue..."
+  if [[ "$PAUSE" -eq 1 ]]; then
+    read -p "Press Enter to continue..."
+  fi
 }
 
 if [ "$(id -u)" != 0 ]; then
@@ -44,7 +47,7 @@ dnf install -q -y \
   taglib-devel fftw-devel opus-devel opusfile-devel libvorbis-devel libogg-devel \
   chafa-devel libatomic glib2-devel \
   libevdev-devel yaml-cpp-devel boost-devel \
-  wmctrl cronie
+  wmctrl cronie xinput
 pause
 
 log_section "Installing Desktop Environment"
@@ -61,12 +64,12 @@ systemctl enable bluetooth
 pause
 
 log_section "Installing System Utilities and Shell"
-dnf install -q -y kitty neovim htop bc tree smartmontools iwd systemd-resolved zsh zip tar bat atuin python3-pip pipx ruby ruby-devel sudo dnf install udiskie udisks2 preload cargo yazi node npm brightnessctl power-profiles-daemon acpi aerc rsync httpd
+dnf install -q -y kitty neovim htop tree smartmontools iwd tldr systemd-resolved zsh zip tar bat atuin python3-pip pipx cmake ruby ruby-devel install udiskie udisks2 preload cargo yazi node npm brightnessctl power-profiles-daemon acpi aerc rsync httpd
 systemctl enable --now httpd
 pause
 
 log_section "Installing Applications"
-dnf install -q -y firefox
+dnf install -q -y firefox mpv gimp audacity
 pause
 
 log_section "Building and Installing Neofetch"
@@ -79,20 +82,20 @@ if [ ! -f /usr/bin/neofetch ]; then
 fi
 pause
 
-log_section "Building and Installing ly Display Manager"
-if [ ! -f /usr/bin/ly ]; then
-  curl -fsSL https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz -o /tmp/zig.tar.xz
-  mkdir -p /tmp/zigdir && tar -xf /tmp/zig.tar.xz -C /tmp/zigdir
-  export PATH="/tmp/zigdir/zig-linux-x86_64-0.14.0:$PATH"
-  (
-    git clone https://github.com/cylgom/ly.git /tmp/ly
-    cd /tmp/ly
-    zig build && zig build installexe
-  )
-  systemctl enable ly.service
-  rm -rf /tmp/zig.tar.xz /tmp/zigdir /tmp/ly
-fi
-pause
+#log_section "Building and Installing ly Display Manager"
+#if [ ! -f /usr/bin/ly ]; then
+#  curl -fsSL https://ziglang.org/download/0.14.0/zig-linux-x86_64-0.14.0.tar.xz -o /tmp/zig.tar.xz
+#  mkdir -p /tmp/zigdir && tar -xf /tmp/zig.tar.xz -C /tmp/zigdir
+#  export PATH="/tmp/zigdir/zig-linux-x86_64-0.14.0:$PATH"
+#  (
+#    git clone https://github.com/cylgom/ly.git /tmp/ly
+#    cd /tmp/ly
+#    zig build && zig build installexe
+#  )
+#  systemctl enable ly.service
+#  rm -rf /tmp/zig.tar.xz /tmp/zigdir /tmp/ly
+#fi
+#pause
 
 log_section "Building and Installing i3lock-color"
 if [ ! -f /usr/local/bin/i3lock-color ]; then

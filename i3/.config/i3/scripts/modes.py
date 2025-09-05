@@ -1,7 +1,28 @@
 #!/home/tx27/.config/.venv/bin/python
-
 import os
 import i3ipc
+import sys
+import subprocess
+
+def already_running():
+    try:
+        current_pid = os.getpid()
+        script_path = os.path.abspath(__file__)
+        result = subprocess.run(
+            ["pgrep", "-fx", f"python {script_path}"],
+            stdout=subprocess.PIPE,
+            text=True
+        )
+        for pid in result.stdout.strip().split():
+            if pid and int(pid) != current_pid:
+                return True
+        return False
+    except Exception as e:
+        return False
+
+if already_running():
+    print("Script is already running, exiting.")
+    sys.exit(0)
 
 i3 = i3ipc.Connection()
 home = os.environ["HOME"]
@@ -41,11 +62,6 @@ def update_window_borders():
         else:
             for win in windows:
                 win.command(f"border pixel {border_size}")
-
-#def update_window_borders():
-#    tree = i3.get_tree()
-#    for win in tree.leaves():
-#        win.command("border none")
 
 def on_change(i3, e):
     apply_mode_settings()

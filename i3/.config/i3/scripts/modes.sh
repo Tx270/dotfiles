@@ -6,6 +6,5 @@ killall -q polybar picom
 
 while pgrep -x polybar >/dev/null; do sleep 0.1; done
 
-#"$HOME/.config/i3/scripts/gaps.sh"
 "$HOME/.config/polybar/launch.sh" "$1" &
 picom --config "$HOME/.config/picom/${1}.conf" &
