@@ -1,5 +1,4 @@
 set $mod Mod4
-set $TOUCHPAD_ID 14
 
 font pango:Meslo LGM Nerd Font 9
 
@@ -7,16 +6,19 @@ exec --no-startup-id feh --bg-fill "$(cat ~/.cache/wal/wal)"
 exec --no-startup-id date +%s > /tmp/network_event_timestamp
 exec --no-startup-id betterlockscreen -u "$(cat ~/.cache/wal/wal)" --fx none
 exec --no-startup-id xrdb -merge ~/.Xresources
-exec --no-startup-id xinput set-prop $TOUCHPAD_ID "libinput Tapping Enabled" 1
-exec --no-startup-id xinput set-prop $TOUCHPAD_ID "libinput Natural Scrolling Enabled" 1
 exec --no-startup-id redshift
 exec --no-startup-id udiskie
 exec --no-startup-id libinput-gestures
-exec_always --no-startup-id ~/.config/i3/scripts/modes.py
-exec_always --no-startup-id ~/.config/polybar/launch.sh
+exec --no-startup-id setxkbmap -option ctrl:nocaps
+exec --no-startup-id xcape -e 'Control_L=Escape'
+exec_always --no-startup-id sh -c 'MODE="$(<~/.config/mode)"; "$HOME/.config/i3/scripts/modes.sh" ${MODE}'
 exec_always --no-startup-id sh -c 'MODE="$(<~/.config/mode)"; picom --config "$HOME/.config/picom/${MODE}.conf"'
 exec_always --no-startup-id ~/.config/i3/scripts/monitors.sh
 exec --no-startup-id xss-lock --transfer-sleep-lock -- betterlockscreen -l
+
+exec --no-startup-id sh -c 'id=$(xinput list | grep -i touchpad | awk "{print \$6}" | cut -d= -f2); \
+xinput set-prop "$id" "libinput Tapping Enabled" 1; \
+xinput set-prop "$id" "libinput Natural Scrolling Enabled" 1'
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -i 5"
 bindsym XF86AudioLowerVolume exec --no-startup-id bash -c "pactl set-sink-mute @DEFAULT_SINK@ false && pamixer -d 5"
@@ -28,12 +30,13 @@ bindsym XF86MonBrightnessUp exec --no-startup-id ~/.config/i3/scripts/brightness
 #floating_modifier $mod
 #tiling_drag modifier titlebar
 
-for_window [class=".*"] border none
+for_window [class=".*"] border pixel 3
+smart_borders on
 
 bindsym $mod+Return exec kitty
 bindsym $mod+t exec kitty -e htop
 bindsym $mod+b exec firefox
-bindsym $mod+y exec env EDITOR=nvim VISUAL=nvim kitty -e yazi
+bindsym $mod+y exec --no-startup-id ~/.config/i3/scripts/yazi-launcher.sh
 
 bindsym $mod+q kill
 bindsym $mod+Delete exec betterlockscreen -l
@@ -43,8 +46,6 @@ bindsym $mod+Control+Left exec playerctl previous
 bindsym $mod+Control+Up exec pamixer -i 5
 bindsym $mod+Control+Down exec pamixer -d 5
 bindsym $mod+Control+Return exec ~/.config/polybar/scripts/playerctl.sh --play-pause
-
-bindsym $mod+a exec xdotool key F5
 
 bindcode $mod+40 exec ~/.config/rofi/launcher.sh
 
@@ -77,6 +78,8 @@ bindsym $mod+h split h
 bindsym $mod+v split v
 
 bindsym $mod+f fullscreen toggle
+
+bindsym $mod+m exec --no-startup-id ~/.config/rofi/powermenu.sh
 
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
@@ -121,7 +124,7 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
-bindsym $mod+Shift+w exec --no-startup-id ~/.config/wal/wal.sh
+bindsym $mod+Shift+w exec --no-startup-id ~/.config/wal/service.sh && feh --bg-fill "$(cat ~/.cache/wal/wal)" && notify-send 'Walpaper changed' 'A random walpaper was choosen and the theam was changed'
 
 bindsym $mod+Control+1 exec ~/.config/i3/scripts/modes.sh showy
 bindsym $mod+Control+2 exec ~/.config/i3/scripts/modes.sh focus

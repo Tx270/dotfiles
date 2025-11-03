@@ -1,5 +1,18 @@
 #!/bin/bash
 
+case "$1" in
+showy)
+  i3-msg "gaps inner all set 4; gaps outer all set 3"
+  ;;
+focus)
+  i3-msg "gaps inner all set 0; gaps outer all set 0"
+  ;;
+*)
+  echo "Usage: $0 {showy|focus}"
+  exit 1
+  ;;
+esac
+
 echo "$1" >"$HOME/.config/mode"
 
 killall -q polybar picom

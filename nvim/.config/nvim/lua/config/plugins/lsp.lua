@@ -170,39 +170,26 @@ return {
 
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-			-- Enable the following language servers
-			--  Add any additional override configuration in the following tables. Available keys are:
-			--  - cmd (table): Override the default command used to start the server
-			--  - filetypes (table): Override the default list of associated filetypes for the server
-			--  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-			--  - settings (table): Override the default settings passed when initializing the server.
-			--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 			local servers = {
-				-- clangd = {},
-				-- gopls = {},
-				-- pyright = {},
-				-- rust_analyzer = {},
-				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-				--
-				-- Some languages (like typescript) have entire language plugins that can be useful:
-				--    https://github.com/pmizio/typescript-tools.nvim
-				--
-				-- But for many setups, the LSP (`ts_ls`) will work just fine
-				-- ts_ls = {},
-				--
-
+				clangd = {}, -- C/C++
+				sqlls = {}, -- SQLite
+				jdtls = {}, -- Java
+				jsonls = {}, -- JSON
+				pyright = {}, -- Python
+				omnisharp = {}, -- C#
+				ts_ls = {}, -- JS/TS/React
+				intelephense = {},
+				html = {},
+				cssls = {},
+				tailwindcss = {},
+				yamlls = {},
+				marksman = {},
+				bashls = {},
 				lua_ls = {
-					-- cmd = { ... },
-					-- filetypes = { ... },
-					-- capabilities = {},
 					settings = {
 						Lua = {
-							completion = {
-								callSnippet = "Replace",
-							},
-							diagnostics = {
-								disable = { "missing-fields" },
-							},
+							completion = { callSnippet = "Replace" },
+							diagnostics = { disable = { "missing-fields" } },
 						},
 					},
 				},
@@ -211,7 +198,14 @@ return {
 			-- Ensure the servers and tools above are installed
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
-				"stylua", -- Used to format Lua code
+				"stylua",
+				"black",
+				"prettierd",
+				"prettier",
+				"jq",
+				"sqlfluff",
+				"google-java-format",
+				"clang-format",
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 

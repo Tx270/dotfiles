@@ -33,5 +33,29 @@ cat >"$HOME/.cache/wal/colors.rasi" <<EOF
 }
 EOF
 
+cat > "$HOME/.config/fzf/fzf.conf" <<EOF
+--border sharp
+--list-border sharp
+--input-border sharp
+--header-border sharp
+--preview-border sharp
+--height 40%
+--layout reverse
+--scroll-off=200
+--padding 1,2
+--border-label 'fzf'
+--input-label 'Input'
+--header-label 'File Type'
+--preview '/home/tx27/.config/fzf/fzf-preview.sh {}'
+--bind 'result:transform-list-label:
+if [[ -z $FZF_QUERY ]]; then
+echo " $FZF_MATCH_COUNT items ";
+else echo " $FZF_MATCH_COUNT matches for [$FZF_QUERY] ";
+fi'
+--bind 'focus:transform-preview-label:[[ -n {} ]] && printf " Previewing [%s] " {}'
+--bind 'focus:+transform-header:file --brief {} || echo "No file selected"'
+--bind 'ctrl-r:change-list-label(Reloading the list)+reload(sleep 2; git ls-files)'
+EOF
+
 cp "$HOME/.cache/wal/dunstrc" "$HOME/.config/dunst/dunstrc"
 cp "$HOME/.cache/wal/colors.Xresources" "$HOME/.Xresources"
