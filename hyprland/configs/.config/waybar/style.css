@@ -1,0 +1,114 @@
+@import '/home/tx27/.cache/wal/colors-waybar.css';
+
+* {
+  border: none;
+  border-radius: 0px;
+
+  font-family: "Adwaita Sans", "JetBrainsMono Nerd Font Propo", sans-serif;
+  font-weight: bold;
+  font-size: 13px;
+  
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+window#waybar {
+  background: transparent;
+}
+
+tooltip {
+  background: @background;
+  border-radius: 12px;
+}
+
+tooltip label {
+  color: @foreground;
+  padding: 6px;
+}
+
+#workspaces {
+  background-color: @background;
+  padding: 5px 3px;
+  margin: 0 0 0 12px;
+  border-radius: 18px;
+}
+
+#workspaces button {
+  padding: 0px 6px;
+  margin: 0px 3px;
+  border-radius: 50px;
+  color: transparent;
+  background-color: @color2;
+  transition: all 0.3s ease-in-out;
+}
+
+#workspaces button.active {
+  background-color: @color9;
+  color: @background;
+  min-width: 35px;
+  transition: all 0.2s ease-in-out;
+}
+
+#workspaces button:hover {
+  background-color: @background;
+  color: @background;
+  min-width: 35px;
+  background-size: 400% 400%;
+}
+
+#workspaces button.urgent {
+  background-color: @color11;
+  color: @background;
+  min-width: 35px;
+  background-size: 400% 400%;
+  transition: all 0.2s ease-in-out;
+}
+
+#battery,
+#pulseaudio,
+#network,
+#bluetooth,
+#clock,
+#custom-power,
+#backlight,
+#mpris {
+  background-color: @background;
+  padding: 10px 15px;
+  margin: 0 0 0 12px;
+  border-radius: 50px;
+}
+
+
+#clock {
+  color: @foreground;
+}
+
+#pulseaudio {
+  color: @color15;
+}
+
+#backlight {
+  color: @color9;
+}
+
+#network {
+  color: @color14;
+}
+
+#bluetooth {
+  color: @color13;
+}
+
+#battery {
+  color: @color12;
+}
+
+#mpris {
+  color: @color10;
+}
+
+#custom-power {
+  color: @color11;
+  margin-right: 18px;
+}

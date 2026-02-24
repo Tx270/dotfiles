@@ -1,0 +1,119 @@
+{
+  "margin-top": 15,
+  "modules-left": [
+    "clock",
+    "network",
+    "bluetooth",
+    "mpris"
+  ],
+  "modules-center": [
+    "hyprland/workspaces"
+  ],
+  "modules-right": [
+    "pulseaudio",
+    "backlight",
+    "battery",
+    "custom/power"
+  ],
+  "clock": {
+    "interval": 60,
+    "format": "󰥔   {:%H:%M}",
+    "tooltip-format": "{:%d.%m.%Y}",
+    "max-length": 25
+  },
+  "network": {
+    "interface": "wlan0",
+    "format": "{ifname}",
+    "format-wifi": "    {essid}",
+    "format-ethernet": "󰈀",
+    "format-disconnected": "󰖪",
+    "tooltip-format": "{ifname} via {gwaddr}",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+    "tooltip-format-ethernet": "{ifname}",
+    "tooltip-format-disconnected": "Disconnected",
+    "max-length": 50,
+    "on-click": "kitty --title impala impala",
+    "on-click-right": "iwctl station wlan0 scan & notify-send 'Started scan' 'Wifi scan started'"
+  },
+  "bluetooth": {
+    "format": "",
+    "format-disabled": "󰂲",
+    "format-connected": "   {device_alias}",
+    "format-connected-battery": "   {device_alias}",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+    "on-click": "kitty --title bluetui bluetui",
+    "on-click-right": "bluetoothctl scan on & notify-send 'Started scan' 'Bluetooth scan started'"
+  },
+  "pulseaudio": {
+    "format": "{icon}    {volume}%",
+    "format-muted": "",
+    "format-icons": {
+      "headphone": "",
+      "phone": "",
+      "phone-muted": "",
+      "portable": "",
+      "car": "",
+      "default": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "scroll-step": 5,
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click": "kitty --title wiremix wiremix",
+    "ignored-sinks": [
+      "Easy Effects Sink"
+    ]
+  },
+  "battery": {
+    "interval": 60,
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon}   {capacity}%",
+    "format-icons": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "max-length": 25,
+    "on-click": "~/.config/rofi/launcher.sh --battery"
+  },
+  "custom/power": {
+    "format": "⏻",
+    "exec": "uptime -p",
+    "interval": 60,
+    "tooltip-format": "{text}",
+    "on-click": "~/.config/rofi/launcher.sh --power"
+  },
+  "backlight": {
+    "device": "intel_backlight",
+    "format": "{icon}    {percent}%",
+    "format-icons": [
+      "󰃞",
+      "󰃟",
+      "󰃠"
+    ],
+    "tooltip": false
+  },
+  "mpris": {
+    "format": "{player_icon}   {artist} - {title}",
+    "format-paused": "{status_icon} <i>{artist} - {title}</i>",
+    "tooltip-format": "Playing \"{title}\" by {artist} on {player}",
+    "max-length": 40,
+    "player-icons": {
+      "default": "",
+      "mpv": ""
+    },
+    "status-icons": {
+      "paused": ""
+    }
+  }
+}

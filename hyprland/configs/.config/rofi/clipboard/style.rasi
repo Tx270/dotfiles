@@ -1,0 +1,120 @@
+/**
+ * Dynamic rofi theme
+ * Adapted by undiabler <undiabler@gmail.com> as Nord rofi theme
+ * Edited by Tx270
+ */
+
+@import "~/.cache/wal/colors-rofi-dark.rasi"
+
+* {
+    backlight:   #ccffeedd;
+    background-color:  transparent;
+    transparent: rgba(46,52,64,0);
+}
+
+window {
+    location: center;
+    anchor:   center;
+    transparency: "screenshot";
+    padding: 10px;
+    border:  0px;
+    border-radius: 6px;
+    width: 40%;
+
+    background-color: @transparent;
+    spacing: 0;
+    children:  [mainbox];
+    orientation: horizontal;
+    font:  "JetBrainsMono Nerd Font Propo 11";
+}
+
+mainbox {
+    spacing: 0;
+    children: [ inputbar, message, listview ];
+    border: 1px;
+    border-color: @selected-normal-background;
+    border-radius: 18px;
+}
+
+message {
+    color: @background;
+    padding: 5;
+    border-color: @foreground;
+    border:  0px 2px 2px 2px;
+}
+
+inputbar {
+    padding: 11px;
+    background-color: @active-background;
+
+    border-radius:  18px 18px 0px 0px;
+    children:   [ prompt,entry,case-indicator ];
+}
+
+entry, prompt, case-indicator {
+    text-font: inherit;
+    text-color: inherit;
+}
+
+prompt {
+  padding: 0 12px 0 7px;
+  margin: 0px 1em 0em 0em ;
+}
+
+
+listview {
+    padding: 14px;
+    border-radius: 0px 0px 18px 18px;
+    border: 0px 1px 1px 1px;
+    background-color: rgba(46,52,64,0.9);
+    dynamic: false;
+}
+
+element {
+    padding: 5px 10px;
+    margin: 2px;
+    vertical-align: 0.5;
+    border-radius: 5px;
+    background-color: transparent;
+    color: @foreground;
+    text-color: rgb(216, 222, 233);
+}
+
+element-text, element-icon {
+    background-color: inherit;
+    text-color:       inherit;
+}
+
+element-icon {
+    padding: 0 10px 0 0;
+  }
+
+element.normal.normal {
+    background-color: transparent;
+  }
+
+  #element.alternate.normal{
+      background-color: transparent;
+    }
+
+element.selected.normal {
+  background-color: @selected-urgent-background;
+}
+
+button {
+    padding: 6px;
+    color: @foreground;
+    horizontal-align: 0.5;
+
+    border: 2px 0px 2px 2px;
+    border-radius: 4px 0px 0px 4px;
+    border-color: @foreground;
+}
+
+textbox {
+    padding: 8px;
+    border: 1px 1px 1px 1px;
+    background-color: rgba(46,52,64,0.9);
+    dynamic: true;
+    text-color: @backlight;
+}
