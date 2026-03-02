@@ -1,0 +1,17 @@
+[mgr]
+prepend_keymap = [
+  { on = "Q", run = "quit", desc = "Quit the process while outputting cwd-file" },
+  { on = "q", run = "quit --no-cwd-file", desc = "Quit the proces" },
+	{ on = [ "g", "l" ], run = "cd ~/.local", desc = "Go ~/.local" },
+	{ on = [ "g", "n" ], run = "cd sftp://nas", desc = "Go to NAS remote" },
+  { on = "<Enter>", run = "plugin smart-enter", desc = "Enter the child directory, or open the file" },
+  { on = "M", run = "plugin mount" },
+  { on = [ "c", "m" ], run = "plugin chmod", desc = "Chmod on selected files"},
+  { on = [ "A", "a"], run = "plugin compress", desc = "Archive selected files" },
+  { on = [ "A", "p"], run = "plugin compress -p", desc = "Archive w/ password" },
+  { on = [ "A", "h"], run = "plugin compress -ph", desc = "Archive w/ pass+header" },
+  { on = [ "A", "l"], run = "plugin compress -l", desc = "Archive w/ compression level" },
+  { on = [ "A", "u"], run = "plugin compress -phl", desc = "Archive w/ pass+head+lvl" },
+  { on = "u", run = "plugin restore", desc = "Restore last deleted files/folders" },
+  { on = [ "c", "e"], run = "plugin copy-file-contents", desc = "Copy contents of file" },
+]

@@ -101,7 +101,8 @@
       "󰃟",
       "󰃠"
     ],
-    "tooltip": false
+    "tooltip": false,
+    "on-click-right": "~/.config/rofi/launcher.sh --screenshot"
   },
   "mpris": {
     "format": "{player_icon}   {artist} - {title}",

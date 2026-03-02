@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# mount and unmount the vault, android phone or remote nas location
+
+BASE="$HOME/.local/mount"
+
+if [ -z "$1" ]; then
+  echo "Usage: mountfs {vault|phone|nas} [-u]"
+  exit 1
+fi
+
+UNMOUNT=false
+[ "$2" = "-u" ] && UNMOUNT=true
+
+mkdir -p "$BASE/Vault"
+mkdir -p "$BASE/Phone"
+mkdir -p "$BASE/Nas"
+
+case "$1" in
+vault)
+  if $UNMOUNT; then
+    fusermount3 -u "$BASE/Vault"
+  else
+    gocryptfs -noprealloc "$XDG_DATA_HOME/vault" "$BASE/Vault"
+  fi
+  ;;
+phone)
+  if $UNMOUNT; then
+    fusermount3 -u "$BASE/Phone"
+  else
+    jmtpfs "$BASE/Phone"
+  fi
+  ;;
+nas)
+  if $UNMOUNT; then
+    fusermount -u "$BASE/Nas"
+  else
+    sshfs \
+      -o IdentityFile="$HOME/.ssh/id_ed25519" \
+      -o port=2222 \
+      -o reconnect \
+      -o ServerAliveInterval=15 \
+      -o ServerAliveCountMax=3 \
+      -o Compression=yes \
+      Tomek@nas:/Storage \
+      "$BASE/Nas"
+  fi
+  ;;
+*)
+  echo "Usage: mountfs {vault|phone|nas} [-u]"
+  exit 1
+  ;;
+esac

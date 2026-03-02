@@ -1,0 +1,49 @@
+#!/bin/bash
+# nas.sh - mount, umount and send files to NAS
+
+NAS_USER="Tomek"
+NAS_HOST="100.95.249.27"
+NAS_MODULE="home"
+NAS_PATH="uploaded"
+
+send_to_nas() {
+  SRC="$1"
+
+  if [ -z "$SRC" ]; then
+    echo "Usage: nas send <path>"
+    exit 1
+  fi
+
+  SRC="$(realpath "$SRC" 2>/dev/null)"
+
+  if [ ! -e "$SRC" ]; then
+    echo "Error: path does not exist"
+    exit 1
+  fi
+
+  if [ -d "$SRC" ]; then
+    rsync -av --progress "$SRC/" "$NAS_USER@$NAS_HOST::$NAS_MODULE/$NAS_PATH/"
+  else
+    rsync -av --progress "$SRC" "$NAS_USER@$NAS_HOST::$NAS_MODULE/$NAS_PATH/"
+  fi
+}
+
+case "$1" in
+mount)
+  sshfs -o IdentityFile=~/.ssh/id_ed25519 \
+    -o port=77 \
+    -o reconnect \
+    -o ServerAliveInterval=15 \
+    Tomek@100.95.249.27:/volume1/Storage ~/Other/Nas
+  ;;
+umount)
+  fusermount -u ~/Other/Nas
+  ;;
+send)
+  send_to_nas "$2"
+  ;;
+*)
+  echo "Usage: nas {mount|umount|send <path>}"
+  exit 1
+  ;;
+esac

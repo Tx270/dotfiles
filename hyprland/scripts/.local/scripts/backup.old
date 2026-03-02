@@ -1,0 +1,55 @@
+#!/bin/bash
+# backup.sh - system backup with restic
+
+if [ "$EUID" -ne 0 ]; then
+  echo "run this as root, please" >&2
+  exit 1
+fi
+
+DEVICE="/dev/nvme0n1p6"
+MOUNTPOINT="/mnt/backup"
+REPO="$MOUNTPOINT/restic"
+USER_HOME="/home/tx27"
+
+mkdir -p "$MOUNTPOINT"
+
+if ! mountpoint -q "$MOUNTPOINT"; then
+  if ! mount "$DEVICE" "$MOUNTPOINT"; then
+    echo "failed to mount $DEVICE at $MOUNTPOINT" >&2
+    exit 1
+  fi
+fi
+
+trap 'umount "$MOUNTPOINT"' INT TERM EXIT
+
+export RESTIC_REPOSITORY="$REPO"
+export RESTIC_PASSWORD_FILE="$USER_HOME/.restic-pass"
+
+restic unlock
+
+if [ ! -f "$RESTIC_REPOSITORY/config" ]; then
+  restic init
+  chmod 700 "$RESTIC_REPOSITORY"
+fi
+
+dnf repoquery --userinstalled >"$USER_HOME/.dnf-list"
+
+restic backup "$USER_HOME" \
+  --exclude "$USER_HOME/.cache" \
+  --exclude "$USER_HOME/Downloads" \
+  --exclude "$USER_HOME/.local/share/Trash" \
+  --exclude "$USER_HOME/.cargo/registry" \
+  --exclude "$USER_HOME/.npm/_cacache" \
+  --tag home
+
+restic backup "/etc" --tag etc
+restic backup "/opt" --tag opt
+restic backup "/root" --tag root
+
+restic forget --prune \
+  --keep-daily 7 \
+  --keep-weekly 4 \
+  --keep-monthly 6
+
+trap - INT TERM EXIT
+umount "$MOUNTPOINT"

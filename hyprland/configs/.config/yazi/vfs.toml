@@ -1,0 +1,6 @@
+[services.nas]
+type = "sftp"
+host = "nas"
+user = "Tomek"
+port = 2222
+key_file = "~/.ssh/id_ed25519"

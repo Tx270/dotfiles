@@ -20,7 +20,7 @@ window {
     border-radius:               20px;
     border-color:                @active-background;
     cursor:                      "default";
-    font: "JetBrainsMono Nerd Font Propo 11";
+    font:                        "JetBrainsMono Nerd Font Propo 11";
     background-color:            rgba(46,52,64,0.9);
 }
 
@@ -65,6 +65,7 @@ element {
     border-radius:               20px;
     text-color:                  @foreground;
     cursor:                      pointer;
+    background-color:            transparent;
 }
 
 element-text {
@@ -73,20 +74,25 @@ element-text {
     cursor:                      inherit;
     vertical-align:              0.5;
     horizontal-align:            0.5;
-    font: "JetBrainsMono Nerd Font Propo bold 11";
+    font:                        "JetBrainsMono Nerd Font Propo bold 11";
+}
+
+message {
+    background-color:            transparent;
 }
 
 textbox {
-    vertical-align: 0.5;
-    horizontal-align: 0.5;
+    vertical-align:              0.5;
+    horizontal-align:            0.5;
+    background-color:            transparent;
 }
 
 element.normal.normal {
-  background-color: transparent;
+    background-color:            transparent;
 }
 
 element.alternate.normal {
-  background-color: transparent;
+    background-color:            transparent;
 }
 
 element selected.normal {

@@ -6,6 +6,10 @@ configuration {
 /*****----- Global Properties -----*****/
 @import "~/.cache/wal/colors-rofi-dark.rasi"
 
+* {
+background-color: transparent;
+}
+
 /*****----- Main Window -----*****/
 window {
     /* properties for window widget */
@@ -39,7 +43,7 @@ mainbox {
 /*****----- Listview -----*****/
 listview {
     columns:                     1;
-    lines:                       3;
+    lines:                       4;
     cycle:                       true;
     layout:                      vertical;
     fixed-height:                true;
@@ -65,6 +69,7 @@ element {
     border-radius:               20px;
     text-color:                  @foreground;
     cursor:                      pointer;
+    background-color:            transparent;
 }
 
 element-text {

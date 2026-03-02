@@ -1,0 +1,9 @@
+
+[Default Applications]
+audio/mp3=mpv.desktop
+audio/x-mpegurl=mpv.desktop
+audio/mpeg=mpv.desktop
+audio/ogg=mpv.desktop
+inode/directory=yazi.desktop
+application/x-directory=yazi.desktop
+directory=yazi.desktop

@@ -1,0 +1,62 @@
+[mgr]
+sort_by = "natural"
+sort_translit = true
+show_symlink = false
+mouse_events = []
+
+[opener]
+edit = [
+	{ run = "${EDITOR:-vi} %s", desc = "Edit", for = "unix", block = true }
+]
+
+reveal = [
+	{ run = "kitty %d1", desc = "Reveal", for = "linux", orphan = true }
+]
+
+compress = [
+  { run = "ya emit plugin compress", desc = "Compress", for = "linux" }
+]
+
+chmod = [
+  { run = "ya emit plugin chmod", desc = "Chmod", for = "linux" }
+]
+
+wallpaper = [
+  { run  = "hyprctl hyprpaper wallpaper ,%s1", for = "linux", desc = "Set as wallpaper" }
+]
+
+[open]
+prepend_rules = [
+  { url = "*/", use = [ "edit", "reveal", "compress" ] },
+  { url = "*.{sh,py,pl,rb,lua,js,php}", use = [ "edit", "reveal", "chmod" ] },
+  { url = "text/x-shellscript", use = [ "edit", "reveal", "chmod" ] },
+  { mime = "application/x-.*", use = [ "open", "reveal", "chmod" ] },
+  { mime = "*executable*", use = [ "open", "reveal", "chmod" ] },
+  { mime = "image/*", use = [ "open", "reveal", "wallpaper" ] },
+]
+
+[plugin]
+prepend_fetchers = [
+  { id = "git", url = "*", run = "git" },
+  { id = "git", url = "*/", run = "git" },
+]
+
+prepend_previewers = [
+  { url = '*.cb{z,r}', run = 'preview-cbz' },
+  { url = '**/.git/', run = 'preview-git' },
+  { url = '*.sqlite3', run = 'preview-sqlite' },
+  { mime = 'application/sqlite3', run = 'preview-sqlite' },
+  { mime = "{audio,video,image}/*", run = "mediainfo"},
+  { mime = "application/subrip", run = "mediainfo" },
+  { mime = "application/postscript", run = "mediainfo" },
+]
+
+prepend_preloaders = [
+  { url = '*.cb{z,r}', run = 'preview-cbz' },
+  { mime = "{audio,video,image}/*", run = "mediainfo" },
+  { mime = "application/subrip", run = "mediainfo" },
+  { mime = "application/postscript", run = "mediainfo" },
+]
+
+[tasks]
+image_alloc = 1073741824
