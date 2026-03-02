@@ -7,3 +7,4 @@ audio/ogg=mpv.desktop
 inode/directory=yazi.desktop
 application/x-directory=yazi.desktop
 directory=yazi.desktop
+audio/x-wav=mpv.desktop
