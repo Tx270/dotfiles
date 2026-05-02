@@ -68,6 +68,16 @@ use = "yazi-rs/plugins:no-status"
 rev = "1962818"
 hash = "3e023d31f29201efdac2a6ae35fedb78"
 
+[[plugin.deps]]
+use = "AnirudhG07/rich-preview"
+rev = "7d616ad"
+hash = "d64feec9761392cbc250d199ab4b8a3a"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:jump-to-char"
+rev = "1962818"
+hash = "7a4b4237223aaa94e589d1c01a23542a"
+
 [[flavor.deps]]
 use = "AdithyanA2005/nord"
 rev = "bdf0bd4"

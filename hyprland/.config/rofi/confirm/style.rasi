@@ -44,10 +44,11 @@ listview {
     layout:                      vertical;
     fixed-height:                true;
     fixed-columns:               true;
+    scrollbar:                   false;
 
     spacing:                     15px;
     margin:                      0px;
-    padding:                     0px;
+    padding:                     2px;
     border:                      0px solid;
     border-radius:               0px;
     border-color:                @active-background;
@@ -79,6 +80,7 @@ element-text {
 
 message {
     background-color:            transparent;
+    border:                      0px;
 }
 
 textbox {

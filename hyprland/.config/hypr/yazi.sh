@@ -13,4 +13,4 @@ if [ -z "$cwd" ] || [ "$cwd" = "$HOME" ]; then
   exit 0
 fi
 
-exec env EDITOR=nvim VISUAL=nvim kitty --directory "$cwd"
+exec kitty --directory "$cwd"

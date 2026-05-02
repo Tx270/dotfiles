@@ -1,0 +1,34 @@
+[general]
+destination = "$HOME/.config/hypr/monitors.conf"
+
+[power_events]
+
+[power_events.dbus_query_object]
+path = "/org/freedesktop/UPower/devices/line_power_AC"
+
+[[power_events.dbus_signal_match_rules]]
+object_path = "/org/freedesktop/UPower/devices/line_power_AC"
+
+
+[profiles.laptop]
+config_file = "/home/tx27/.config/hyprdynamicmonitors/hyprconfigs/laptop.go.tmpl"
+config_file_type = "template"
+[profiles.laptop.conditions]
+
+[[profiles.laptop.conditions.required_monitors]]
+description = "AU Optronics 0x633D"
+monitor_tag = "monitor0"
+
+
+[profiles.docked]
+config_file = "/home/tx27/.config/hyprdynamicmonitors/hyprconfigs/docked.go.tmpl"
+config_file_type = "template"
+[profiles.docked.conditions]
+
+[[profiles.docked.conditions.required_monitors]]
+description = "AU Optronics 0x633D"
+monitor_tag = "monitor0"
+
+[[profiles.docked.conditions.required_monitors]]
+description = "Dell Inc. DELL U2414H 9TG464A82GEL"
+monitor_tag = "monitor1"

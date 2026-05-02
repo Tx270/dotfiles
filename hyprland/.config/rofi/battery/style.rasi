@@ -28,7 +28,7 @@ window {
 mainbox {
     enabled:                     true;
     margin:                      0px;
-    padding:                     25px 5px 25px 25px;
+    padding:                     25px;
     border:                      1px solid;
     border-radius:               20px;
     border-color:                @active-background;
@@ -44,6 +44,7 @@ listview {
     layout:                      vertical;
     fixed-height:                true;
     fixed-columns:               true;
+    scrollbar:                   false;
 
     spacing:                     15px;
     margin:                      0px;

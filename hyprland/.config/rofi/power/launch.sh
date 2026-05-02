@@ -11,7 +11,7 @@ windows='󰖳'
 fedora=''
 uefi=''
 
-choise=$(echo -e "$lock\n$suspend\n$reboot\n$shutdown" |
+choice=$(echo -e "$lock\n$suspend\n$reboot\n$shutdown" |
   rofi -dmenu -theme "$HOME/.config/rofi/power/style.rasi")
 
 confirm() {
@@ -40,7 +40,7 @@ reboot_menu() {
   esac
 }
 
-case "$choise" in
+case "$choice" in
 "$lock")
   hyprlock
   ;;

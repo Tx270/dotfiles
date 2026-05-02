@@ -63,7 +63,7 @@
       ]
     },
     "scroll-step": 5,
-    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "systemctl --user restart pipewire  & notify-send 'Audio restarted' 'Pulseaudio service restart started'",
     "on-click": "kitty --title wiremix wiremix",
     "ignored-sinks": [
       "Easy Effects Sink"
@@ -102,6 +102,7 @@
       "󰃠"
     ],
     "tooltip": false,
+    "on-click": "kitty --title monitors hyprdynamicmonitors tui",
     "on-click-right": "~/.config/rofi/launcher.sh --screenshot"
   },
   "mpris": {

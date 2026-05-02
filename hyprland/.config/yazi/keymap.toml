@@ -3,6 +3,11 @@ prepend_keymap = [
   { on = "Q", run = "quit", desc = "Quit the process while outputting cwd-file" },
   { on = "q", run = "quit --no-cwd-file", desc = "Quit the proces" },
 	{ on = [ "g", "l" ], run = "cd ~/.local", desc = "Go ~/.local" },
+	{ on = [ "g", "m" ], run = "cd /run/media/$USER", desc = "Go to media" },
+	{ on = [ "g", "s" ], run = "cd ~/SCI", desc = "Go to ~/SCI" },
+	{ on = [ "g", "d" ], run = "cd ~/SCI/Db", desc = "Go to Database projects" },
+	{ on = [ "g", "p" ], run = "cd ~/SCI/Python", desc = "Go to Python projects" },
+	{ on = [ "g", "w" ], run = "cd ~/SCI/Web", desc = "Go to Web projects" },
 	{ on = [ "g", "n" ], run = "cd sftp://nas", desc = "Go to NAS remote" },
   { on = "<Enter>", run = "plugin smart-enter", desc = "Enter the child directory, or open the file" },
   { on = "M", run = "plugin mount" },
@@ -14,4 +19,5 @@ prepend_keymap = [
   { on = [ "A", "u"], run = "plugin compress -phl", desc = "Archive w/ pass+head+lvl" },
   { on = "u", run = "plugin restore", desc = "Restore last deleted files/folders" },
   { on = [ "c", "e"], run = "plugin copy-file-contents", desc = "Copy contents of file" },
+  { on = "F", run  = "plugin jump-to-char", desc = "Jump to char" },
 ]

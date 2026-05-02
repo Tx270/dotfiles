@@ -40,13 +40,13 @@ alias tp='trash-put'
 alias catx='copyfile'
 alias pwdx='copypath'
 alias icat='kitten icat'
+alias k='setsid kitty >/dev/null 2>&1 < /dev/null &'
 alias fzf='fzf --style=full'
 
 alias rm='echo "This is not the command you are looking for."; false'
-alias refresh='source ~/.zshrc && echo "Refreshed terminal source"'
+alias refresh='source ~/.config/zsh/.zshrc && echo "Refreshed terminal source"'
 alias update='sudo dnf update && sudo dnf upgrade'
 alias phps='php -S 127.0.0.1:8080'
-alias folder-to-cbz='/bin/ls -1v -- *.png 2>/dev/null | tr '\n' '\0' | xargs -0 zip -j ../comic.cbz'
 
 
 function y() {
@@ -55,6 +55,15 @@ function y() {
 	IFS= read -r -d '' cwd < "$tmp"
 	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
 	/bin/rm -f -- "$tmp"
+}
+
+function make_cbz() {
+    local name
+    name="$(basename "$PWD").cbz"
+
+    find . -maxdepth 1 -type f \( -name "*.png" -o -name "*.jpg" \) -printf "%f\n" \
+    | sort -V \
+    | zip "../$name" -@
 }
 
 bindkey -r '^T'

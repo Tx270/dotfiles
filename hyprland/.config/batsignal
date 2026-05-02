@@ -1,0 +1,56 @@
+# run as background daemon
+-b
+
+# battery device name
+-n
+BAT0
+
+# check interval in seconds
+-m
+5
+
+# warning level percentage
+-w
+20
+
+# critical level percentage
+-c
+10
+
+# danger level percentage
+-d
+3
+
+# command executed at danger level
+-D
+systemctl suspend
+
+# full battery notification level
+#-f
+#98
+
+# show charging and discharging messages
+-p
+
+# message for warning level
+-W
+Battery low
+
+# message for critical level
+-C
+Battery critical
+
+# message for full battery
+#-F
+#Battery full
+
+# message when charging starts
+-P
+Charging
+
+# message when discharging starts
+-U
+Discharging
+
+# expire notifications automatically
+-e

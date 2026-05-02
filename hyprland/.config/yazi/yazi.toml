@@ -9,6 +9,14 @@ edit = [
 	{ run = "${EDITOR:-vi} %s", desc = "Edit", for = "unix", block = true }
 ]
 
+edit-audio = [
+  { run = "audacity %s1", desc = "Edit", orphan = true }
+]
+
+read = [
+  { run = "zathura %s1", desc = "Read", orphan = true }
+]
+
 reveal = [
 	{ run = "kitty %d1", desc = "Reveal", for = "linux", orphan = true }
 ]
@@ -25,6 +33,10 @@ wallpaper = [
   { run  = "hyprctl hyprpaper wallpaper ,%s1", for = "linux", desc = "Set as wallpaper" }
 ]
 
+extract = [
+	{ run = "ya pub extract --list %s", desc = "Extract" },
+]
+
 [open]
 prepend_rules = [
   { url = "*/", use = [ "edit", "reveal", "compress" ] },
@@ -33,6 +45,9 @@ prepend_rules = [
   { mime = "application/x-.*", use = [ "open", "reveal", "chmod" ] },
   { mime = "*executable*", use = [ "open", "reveal", "chmod" ] },
   { mime = "image/*", use = [ "open", "reveal", "wallpaper" ] },
+  { mime = "audio/*", use = [ "play", "edit-audio", "reveal"] },
+  { url = '*.cb{z,r}', use = [ "read", "extract", "reveal"] },
+  { url = '*.pdf', use = [ "read", "reveal"] },
 ]
 
 [plugin]
@@ -45,6 +60,11 @@ prepend_previewers = [
   { url = '*.cb{z,r}', run = 'preview-cbz' },
   { url = '**/.git/', run = 'preview-git' },
   { url = '*.sqlite3', run = 'preview-sqlite' },
+  { url = "*.csv", run = "rich-preview"},
+  { url = "*.md", run = "rich-preview" },
+  { url = "*.rst", run = "rich-preview"},
+  { url = "*.ipynb", run = "rich-preview"},
+  { url = "*.json", run = "rich-preview"},
   { mime = 'application/sqlite3', run = 'preview-sqlite' },
   { mime = "{audio,video,image}/*", run = "mediainfo"},
   { mime = "application/subrip", run = "mediainfo" },
